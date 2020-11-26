@@ -27,7 +27,7 @@ Finalmente agregamos la dependecia
 
 ```
 dependencies {
-implementation 'com.github.miituo:android_libs:0.1.4'
+implementation 'com.github.miituo:android_libs:0.2.0'
 ...
 ```
 
@@ -44,13 +44,17 @@ buttonLaunch.setOnClickListener(new View.OnClickListener() {
         if(!editTextPhone.getText().toString().equals("")) {
             Intent i = new Intent(MainActivity.this, PrincipalActivity.class);
             i.putExtra("telefono", editTextPhone.getText().toString());
+            i.putExtra("dev", 0);
+
             startActivity(i);
         }
     }
 });
 ```  
 
-Donde **telefono** es el extra que necesita la librería para buscar las pólizas miituo
+Donde:
+**telefono** es el extra que necesita la librería para buscar las pólizas miituo
+**dev** es el bandera para cambiar de ambiente: **1 para desarrollo, 0 para producción**
   
 La librería puede:
 Reportar odómetro
