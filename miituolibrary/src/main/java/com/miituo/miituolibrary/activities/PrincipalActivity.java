@@ -2,6 +2,8 @@ package com.miituo.miituolibrary.activities;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
@@ -24,6 +26,7 @@ import com.google.gson.reflect.TypeToken;
 import com.miituo.miituolibrary.R;
 import com.miituo.miituolibrary.activities.adapters.PromosAdapter;
 import com.miituo.miituolibrary.activities.adapters.VehicleModelAdapter;
+import com.miituo.miituolibrary.activities.adapters.VehicleRecyclerAdapter;
 import com.miituo.miituolibrary.activities.api.ApiClient;
 import com.miituo.miituolibrary.activities.data.IinfoClient;
 import com.miituo.miituolibrary.activities.data.InfoClient;
@@ -40,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import static com.miituo.miituolibrary.activities.api.ApiClient.ambiente;
 
 public class PrincipalActivity extends AppCompatActivity implements CallBack {
 
@@ -52,10 +56,12 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
     private LinearLayout dotsLayout;
     private TextView[] dots;
 
-    private ListView vList;
-    private VehicleModelAdapter vadapter;
+    //private ListView vList;
+    //private VehicleModelAdapter vadapter;
+    private VehicleRecyclerAdapter vadapter;
 
     public String tok_basic, tokencliente;
+    private RecyclerView recyclerView;
     public static List<InfoClient> result;
     static AlertDialog alerta;
 
@@ -66,14 +72,51 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
 
         app_preferences = getSharedPreferences(getString(R.string.shared_name_prefs), Context.MODE_PRIVATE);
 
+        telefono = getIntent().getStringExtra("telefono");
+        if(telefono == null){
+            telefono = app_preferences.getString("Celphone","null");
+            if(telefono.equals("null")){
+                launchAlert("No cuentas con pólizas activas.");
+            }
+        }else{
+            app_preferences.edit().putString("Celphone", telefono).apply();
+        }
+
+        int dev = getIntent().getIntExtra("dev", -1);
+        if(dev == -1){
+            dev = app_preferences.getInt("dev",-1);
+            if(dev == -1){
+                ambiente = 0;
+                app_preferences.edit().putInt("dev", 1).apply();
+            }
+            else if(dev == 0){
+                ambiente = 4;
+                app_preferences.edit().putInt("dev", 0).apply();
+            }else if(dev == 1){
+                ambiente = 0;
+                app_preferences.edit().putInt("dev", 1).apply();
+            }
+        }else if(dev == 0){
+            ambiente = 4;
+            app_preferences.edit().putInt("dev", 0).apply();
+        }else if(dev == 1){
+            ambiente = 0;
+            app_preferences.edit().putInt("dev", 1).apply();
+        }
+
         result = new ArrayList<>();
         long starttime = app_preferences.getLong("time", 0);
-        vadapter = new VehicleModelAdapter(getApplicationContext(), result, starttime, PrincipalActivity.this);
-        vList = (ListView) findViewById(R.id.listviewinfoclient);
-        vList.setAdapter(vadapter);
+        //vadapter = new VehicleModelAdapter(getApplicationContext(), result, starttime, PrincipalActivity.this);
+        recyclerView = findViewById(R.id.listviewinfoclient);
+        vadapter = new VehicleRecyclerAdapter(getApplicationContext(), result, starttime, PrincipalActivity.this);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(vadapter);
+        //vList = (ListView) findViewById(R.id.listviewinfoclient);
+        //vList.setAdapter(vadapter);
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
-        String cupon = "";
+        String cupon = "...";
         if (result != null && result.size() > 0) {
             cupon = result.get(0).getClient().getCupon();
         }
@@ -113,38 +156,6 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                 "reportaste tu odómetro y pagaste el mes anterior.");
         addBottomDots(0);
         pageSwitcher();
-
-        telefono = getIntent().getStringExtra("telefono");
-        if(telefono == null){
-            telefono = app_preferences.getString("Celphone","null");
-            if(telefono.equals("null")){
-                launchAlert("No cuentas con pólizas activas.");
-            }
-        }else{
-            app_preferences.edit().putString("Celphone", telefono).apply();
-        }
-
-        int dev = getIntent().getIntExtra("dev", -1);
-        if(dev == -1){
-            dev = app_preferences.getInt("dev",-1);
-            if(dev == -1){
-                ApiClient.ambiente = 0;
-                app_preferences.edit().putInt("dev", 1).apply();
-            }
-            else if(dev == 0){
-                ApiClient.ambiente = 4;
-                app_preferences.edit().putInt("dev", 0).apply();
-            }else if(dev == 1){
-                ApiClient.ambiente = 0;
-                app_preferences.edit().putInt("dev", 1).apply();
-            }
-        }else if(dev == 0){
-            ApiClient.ambiente = 4;
-            app_preferences.edit().putInt("dev", 0).apply();
-        }else if(dev == 1){
-            ApiClient.ambiente = 0;
-            app_preferences.edit().putInt("dev", 1).apply();
-        }
 
         ImageView imageViewClose = findViewById(R.id.imageViewClose);
         imageViewClose.setOnClickListener(new View.OnClickListener() {
