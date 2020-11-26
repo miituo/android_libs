@@ -24,6 +24,7 @@ import com.google.gson.reflect.TypeToken;
 import com.miituo.miituolibrary.R;
 import com.miituo.miituolibrary.activities.adapters.PromosAdapter;
 import com.miituo.miituolibrary.activities.adapters.VehicleModelAdapter;
+import com.miituo.miituolibrary.activities.api.ApiClient;
 import com.miituo.miituolibrary.activities.data.IinfoClient;
 import com.miituo.miituolibrary.activities.data.InfoClient;
 import com.miituo.miituolibrary.activities.threats.GetCuponAsync;
@@ -76,7 +77,7 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
         if (result != null && result.size() > 0) {
             cupon = result.get(0).getClient().getCupon();
         }
-        Log.e("tag_miituo", ""+cupon);
+
         adapter = new PromosAdapter(this, cupon, 100);
         viewPager.setAdapter(adapter);
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -105,8 +106,6 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
             }
         });
 
-        Log.e("tag_miituo", "dots");
-
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
         dotsLayout.removeAllViews();
         TextView tv = (TextView) findViewById(R.id.terms);
@@ -121,6 +120,30 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
             if(telefono.equals("null")){
                 launchAlert("No cuentas con pólizas activas.");
             }
+        }else{
+            app_preferences.edit().putString("Celphone", telefono).apply();
+        }
+
+        int dev = getIntent().getIntExtra("dev", -1);
+        if(dev == -1){
+            dev = app_preferences.getInt("dev",-1);
+            if(dev == -1){
+                ApiClient.ambiente = 0;
+                app_preferences.edit().putInt("dev", 1).apply();
+            }
+            else if(dev == 0){
+                ApiClient.ambiente = 4;
+                app_preferences.edit().putInt("dev", 0).apply();
+            }else if(dev == 1){
+                ApiClient.ambiente = 0;
+                app_preferences.edit().putInt("dev", 1).apply();
+            }
+        }else if(dev == 0){
+            ApiClient.ambiente = 4;
+            app_preferences.edit().putInt("dev", 0).apply();
+        }else if(dev == 1){
+            ApiClient.ambiente = 0;
+            app_preferences.edit().putInt("dev", 1).apply();
         }
 
         ImageView imageViewClose = findViewById(R.id.imageViewClose);
@@ -220,14 +243,13 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
             @Override
             public void run(boolean status, String res) {
                 if (status) {
-                    Log.e("tag_miituo", ""+status);
+
                     try {
                         //Crear los elementos json para obtener los datos del servicio...
                         JSONArray array = new JSONArray(res);
                         JSONObject o = array.getJSONObject(0);
                         JSONObject cupones = o.getJSONObject("Cupones");
                         Double kms = cupones.getDouble("Kms");
-                        Log.e("tag_miituo", ""+kms);
 
                         InicializarBanners(kms);
                         //Toast.makeText(PrincipalActivity.this, "kilometraje:"+ kms, Toast.LENGTH_SHORT).show();
@@ -244,7 +266,6 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
     }
 
     public void InicializarBanners(Double kms){
-        Log.e("tag_miituo", ""+kms);
 
         String cupon = "";
         if (result != null && result.size() > 0) {

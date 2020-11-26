@@ -43,9 +43,6 @@ public class ApiClient {
     private Context c;
     public static int ambiente = 0;
     //  0->DEV
-    //  1->QA
-    //  2->Multiasegs
-    //  3->MaquinaLocal
     //  4->PROD
 
     protected String miituoKey="Basic +e9Kte71youZLjbIGSlfU5FKO7bL40hgVzpuRzi8EKpDbyXpedQa6DKW2bp7lvi2G+Gy3v11UJOp/ReETiLpTJgkpFyzwSe9fTZUTO/XUBg=";
