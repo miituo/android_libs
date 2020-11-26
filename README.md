@@ -50,9 +50,12 @@ buttonLaunch.setOnClickListener(new View.OnClickListener() {
 });
 ```  
 
-Donde telefono es el extra que necesita la librería para buscar las pólizas miituo
+Donde **telefono** es el extra que necesita la librería para buscar las pólizas miituo
   
-La librería ya esta capacitada para todo el flujo de reporte, toma de fotografías y resumen
+La librería puede:
+Reportar odómetro
+Toma de fotografías
+Ver póliza
   
 ## Preview:
   
