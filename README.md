@@ -27,7 +27,7 @@ Finalmente agregamos la dependecia
 
 ```
 dependencies {
-implementation 'com.github.miituo:android_libs:0.2.1'
+implementation 'com.github.miituo:android_libs:0.2.2'
 ...
 ```
 
