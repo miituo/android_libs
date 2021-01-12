@@ -10,6 +10,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.miituo.miituolibrary.activities.DetallesActivity;
 import com.miituo.miituolibrary.activities.VehicleOdometer;
 import com.miituo.miituolibrary.activities.data.ClientMovil;
 import com.miituo.miituolibrary.activities.data.FotosFaltantesModel;
@@ -298,7 +299,7 @@ public class ApiClient {
             while ((len1 = in.read(buffer)) > 0) {
                 f.write(buffer,0, len1);
             }
-            //DetallesActivity.pdf=f1;
+            DetallesActivity.pdf=f1;
             f.close();
             res="OK";
         }

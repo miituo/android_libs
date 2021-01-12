@@ -161,6 +161,7 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
         imageViewClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                app_preferences.edit().putInt("reload",-1).apply();
                 finish();
             }
         });
@@ -212,7 +213,11 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                             tokencliente = "";
                         }
 
-                        obtenerCupon();
+                        if(app_preferences.getInt("reload",-1) == -1){
+                            obtenerCupon();
+                            app_preferences.edit().putInt("reload",1).apply();
+                        }
+
 
                         //vList.setAdapter(vadapter);
                         //vadapter.notifyDataSetChanged();

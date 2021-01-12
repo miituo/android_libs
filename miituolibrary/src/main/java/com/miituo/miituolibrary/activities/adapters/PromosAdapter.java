@@ -22,16 +22,19 @@ public class PromosAdapter extends PagerAdapter
     private LayoutInflater layoutInflater;
     Context c;
     String codigo="codigo";
-    private int[] layouts = new int[]{
-            R.layout.kms100,
-            R.layout.kms1200};
 
+    private int[] layouts;
     int kms = 100;
 
     public PromosAdapter(Context c,String codigo, int kms) {
         this.c=c;
         this.codigo=codigo;
         this.kms = kms;
+
+        layouts = new int[]{
+                R.layout.kms100,
+                R.layout.kms1200};
+
         Log.e("tag_miituo", ""+codigo);
     }
 
