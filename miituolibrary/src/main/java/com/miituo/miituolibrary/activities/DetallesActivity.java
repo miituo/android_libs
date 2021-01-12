@@ -1,24 +1,29 @@
 package com.miituo.miituolibrary.activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -41,6 +46,8 @@ public class DetallesActivity extends AppCompatActivity {
     public static File pdf;
     public static AlertDialog alertaPago;
     public String pathPhotos = new ApiClient(this).pathPhotos;
+
+    private static final int PERMISSION_CODE = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,42 +119,19 @@ public class DetallesActivity extends AppCompatActivity {
         lbDescargar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new GetPDFSync(DetallesActivity.this,true, IinfoClient.InfoClientObject.getPolicies().getId(),IinfoClient.InfoClientObject.getPolicies().getNoPolicy(), new SimpleCallBack() {
-                    @Override
-                    public void run(boolean status, String res) {
-                        if(!status){
-//            Toast.makeText(c,"descarga fallida",Toast.LENGTH_LONG).show();
-                            final AlertDialog.Builder builder = new AlertDialog.Builder(DetallesActivity.this);
-                            builder.setTitle("Descarga Fallida");
-                            builder.setMessage("Por favor intentalo más tarde.");
-                            builder.setCancelable(false);
-                            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    alertaPago.dismiss();
-                                }
-                            });
-                            alertaPago = builder.create();
-                            alertaPago.show();
-                        }else{
-                            // Toast.makeText(c,"descarga exitosa",Toast.LENGTH_LONG).show();
-                            final AlertDialog.Builder builder = new AlertDialog.Builder(DetallesActivity.this);
-                            builder.setTitle("Descarga completa");
-                            builder.setMessage("Ahora tu póliza se encuentra en tus descargas.");
-                            builder.setCancelable(false);
-                            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    alertaPago.dismiss();
-//                    c.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
-                                    startActivity(new Intent(getApplicationContext(), PDFViewer.class).putExtra("isPoliza",true));
-                                }
-                            });
-                            alertaPago = builder.create();
-                            alertaPago.show();
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (
+                                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
+                                        || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
+                        ) {
+                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CODE);
+                        } else {
+                            callPDF();
                         }
+                    }else{
+                        callPDF();
                     }
-                }).execute();
             }
         });
 
@@ -156,6 +140,59 @@ public class DetallesActivity extends AppCompatActivity {
             //pintaImg(imagen,position);
             pintaImg(fotocarro, IinfoClient.InfoClientObject.getPolicies().getId());
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+                callPDF();
+            } else {
+                Toast.makeText(this, "No se puede descargar el archivo. Acceso denegado.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void callPDF(){
+        new GetPDFSync(DetallesActivity.this,true, IinfoClient.InfoClientObject.getPolicies().getId(),IinfoClient.InfoClientObject.getPolicies().getNoPolicy(), new SimpleCallBack() {
+            @Override
+            public void run(boolean status, String res) {
+                if(!status){
+//            Toast.makeText(c,"descarga fallida",Toast.LENGTH_LONG).show();
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(DetallesActivity.this);
+                    builder.setTitle("Descarga Fallida");
+                    builder.setMessage("Por favor intentalo más tarde.");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertaPago.dismiss();
+                        }
+                    });
+                    alertaPago = builder.create();
+                    alertaPago.show();
+                }else{
+                    // Toast.makeText(c,"descarga exitosa",Toast.LENGTH_LONG).show();
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(DetallesActivity.this);
+                    builder.setTitle("Descarga completa");
+                    builder.setMessage("Ahora tu póliza se encuentra en tus descargas.");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertaPago.dismiss();
+//                    c.startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+                            startActivity(new Intent(getApplicationContext(), PDFViewer.class).putExtra("isPoliza",true));
+                        }
+                    });
+                    alertaPago = builder.create();
+                    alertaPago.show();
+                }
+            }
+        }).execute();
     }
 
     private void pintaImg(final ImageView iv, int id) {
