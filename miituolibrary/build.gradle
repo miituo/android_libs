@@ -40,7 +40,7 @@ afterEvaluate {
                 artifactId 'miituolibrary'
                 version '0.1'
                 artifact(sourceJar)
-                artifact("$buildDir/outputs/aar/Miituolibrary-release.aar")
+                artifact("$buildDir/outputs/aar/miituolibrary-release.aar")
             }
         }
         repositories {
