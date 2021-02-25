@@ -17,10 +17,11 @@
         android:id="@+id/textView49"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/textView48"
         android:layout_below="@+id/textView48"
-        android:layout_marginEnd="10dp"
+        android:layout_alignStart="@+id/textView48"
         android:layout_marginTop="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
         android:text="Por favor toma las fotos de la forma más clara posible:" />
 
     <TextView
@@ -30,6 +31,8 @@
         android:layout_alignStart="@+id/textView49"
         android:layout_below="@+id/textView49"
         android:layout_marginTop="35dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
         android:text="* Siguiendo las plantillas. " />
 
     <TextView
@@ -40,16 +43,20 @@
         android:layout_alignStart="@+id/textView71"
         android:layout_below="@+id/textView71"
         android:layout_marginTop="5dp"
-        android:text="* Que los" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:text="* Que los cristales y detalles sean visibles" />
 
     <TextView
         android:id="@+id/textView68"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/textView67"
         android:layout_below="@+id/textView67"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="35dp"
+        android:layout_alignStart="@+id/textView67"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="36dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
         android:text="Esto nos servirá como evidencia del estado actual de tu coche en caso de que necesitemos hacer una auditoria." />
 
     <TextView
@@ -83,60 +90,8 @@
         android:layout_alignStart="@+id/textView66"
         android:layout_below="@+id/textView66"
         android:layout_marginTop="5dp"
-        android:text="* Que el número de" />
-
-    <TextView
-        android:id="@+id/textView72"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/textView71"
-        android:layout_marginStart="3dp"
-        android:layout_toEndOf="@+id/textView71"
-        android:text="placas" />
-
-    <TextView
-        android:id="@+id/textView73"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/textView72"
-        android:layout_marginStart="3dp"
-        android:layout_toEndOf="@+id/textView72"
-        android:text="sea visible." />
-
-    <TextView
-        android:id="@+id/textView74"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/textView67"
-        android:layout_marginStart="3dp"
-        android:layout_toEndOf="@+id/textView67"
-        android:text="cristales" />
-
-    <TextView
-        android:id="@+id/textView75"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/textView74"
-        android:layout_marginStart="3dp"
-        android:layout_toEndOf="@+id/textView74"
-        android:text="y" />
-
-    <TextView
-        android:id="@+id/textView76"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/textView75"
-        android:layout_marginStart="3dp"
-        android:layout_toEndOf="@+id/textView75"
-        android:text="detalles" />
-
-    <TextView
-        android:id="@+id/textView77"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/textView76"
-        android:layout_marginStart="3dp"
-        android:layout_toEndOf="@+id/textView76"
-        android:text="sean visibles." />
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:text="* Que el número de placas sea visible" />
 
 </RelativeLayout>

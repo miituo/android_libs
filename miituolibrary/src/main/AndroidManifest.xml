@@ -28,6 +28,7 @@
         <activity android:name=".activities.VehicleOdometer"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.PrincipalActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.VehiclePictures"
             android:theme="@style/AppTheme.NoActionBar"/>

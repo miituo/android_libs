@@ -37,13 +37,22 @@
         android:layout_above="@+id/terms"
         android:orientation="horizontal"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listviewinfoclient"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="5dp"
-        android:layout_below="@+id/divider"
-        android:alpha="0.8" />
+        android:layout_below="@+id/divider">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listviewinfoclient"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/divider"
+            android:alpha="0.8" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/lbSinPolizas"

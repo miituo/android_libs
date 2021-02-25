@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
@@ -59,6 +60,7 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
     //private ListView vList;
     //private VehicleModelAdapter vadapter;
     private VehicleRecyclerAdapter vadapter;
+    private SwipeRefreshLayout swipeContainer;
 
     public String tok_basic, tokencliente;
     private RecyclerView recyclerView;
@@ -111,52 +113,79 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
         vadapter = new VehicleRecyclerAdapter(getApplicationContext(), result, starttime, PrincipalActivity.this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(vadapter);
+        //recyclerView.setAdapter(vadapter);
+
+        runOnUiThread(() -> {
+
+            recyclerView.setAdapter(vadapter);
+            vadapter.notifyDataSetChanged();
+        });
+
+        pageSwitcher();
+        obtenerCupon();
+
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getPolizasData(app_preferences.getString("Celphone", "0"));
+            }
+        });
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         //vList = (ListView) findViewById(R.id.listviewinfoclient);
         //vList.setAdapter(vadapter);
 
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
-        String cupon = "...";
-        if (result != null && result.size() > 0) {
-            cupon = result.get(0).getClient().getCupon();
-        }
-
-        adapter = new PromosAdapter(this, cupon, 100);
-        viewPager.setAdapter(adapter);
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            @Override
-            public void onPageSelected(int position) {
-                TextView tv = (TextView) findViewById(R.id.terms);
-                if (position == 1) {
-                    tv.setText("*Consulta términos y condiciones.");
-                } else {
-                    tv.setText("*Aplica un cupón al mes por póliza solo si \n" +
-                            "reportaste tu odómetro y pagaste el mes anterior.");
-                }
-                addBottomDots(position);
-                timer.cancel();
-                pageSwitcher();
-            }
-
-            @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-            }
-
-
-            @Override
-            public void onPageScrollStateChanged(int arg0) {
-            }
-        });
-
-        dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
-        dotsLayout.removeAllViews();
-        TextView tv = (TextView) findViewById(R.id.terms);
-        tv.setText("Aplica un cupón al mes por póliza solo si \n" +
-                "reportaste tu odómetro y pagaste el mes anterior.");
-        addBottomDots(0);
-        pageSwitcher();
-
+//        viewPager = (ViewPager) findViewById(R.id.view_pager);
+//        String cupon = "...";
+//        if (result != null && result.size() > 0) {
+//            cupon = result.get(0).getClient().getCupon();
+//        }
+//
+//        adapter = new PromosAdapter(this, cupon, 100);
+//        //viewPager.setAdapter(adapter);
+//        runOnUiThread(() -> {
+//            viewPager.setAdapter(adapter);
+//        });
+//
+//        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                TextView tv = (TextView) findViewById(R.id.terms);
+//                if (position == 1) {
+//                    tv.setText("*Consulta términos y condiciones.");
+//                } else {
+//                    tv.setText("*Aplica un cupón al mes por póliza solo si \n" +
+//                            "reportaste tu odómetro y pagaste el mes anterior.");
+//                }
+//                addBottomDots(position);
+//                timer.cancel();
+//                pageSwitcher();
+//            }
+//
+//            @Override
+//            public void onPageScrolled(int arg0, float arg1, int arg2) {
+//            }
+//
+//
+//            @Override
+//            public void onPageScrollStateChanged(int arg0) {
+//            }
+//        });
+//
+//        dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
+//        dotsLayout.removeAllViews();
+//        TextView tv = (TextView) findViewById(R.id.terms);
+//        tv.setText("Aplica un cupón al mes por póliza solo si \n" +
+//                "reportaste tu odómetro y pagaste el mes anterior.");
+//        addBottomDots(0);
+//        pageSwitcher();
+//
         ImageView imageViewClose = findViewById(R.id.imageViewClose);
         imageViewClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,8 +198,8 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
 
     @Override
     protected void onResume() {
-        getPolizasData(telefono);
         super.onResume();
+        getPolizasData(telefono);
     }
 
     public void getPolizasData(final String telefono){
@@ -205,7 +234,13 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                         TextView textViewNombre = findViewById(R.id.textViewNombre);
                         textViewNombre.setText(na);
 
-                        vadapter.updateReceiptsList(result);
+                        removeInvalidPolicies();
+                        runOnUiThread(() -> {
+
+                            vadapter.updateReceiptsList(result);
+                            vadapter.notifyDataSetChanged();
+                        });
+
 
                         if(result.size() > 0) {
                             tokencliente = result.get(0).getClient().getToken();
@@ -213,25 +248,37 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                             tokencliente = "";
                         }
 
-                        if(app_preferences.getInt("reload",-1) == -1){
-                            obtenerCupon();
-                            app_preferences.edit().putInt("reload",1).apply();
-                        }
+//                        if(app_preferences.getInt("reload",-1) == -1){
+//                            obtenerCupon();
+//                            app_preferences.edit().putInt("reload",1).apply();
+//                        }
 
 
                         //vList.setAdapter(vadapter);
                         //vadapter.notifyDataSetChanged();
-                        //swipeContainer.setRefreshing(false);
+                        swipeContainer.setRefreshing(false);
                     }
                 }
             }
         }).execute();
     }
 
+    private void removeInvalidPolicies() {
+        for (int i = (result.size() - 1); i >= 0; i--) {
+//            if(!result.get(i).getPolicies().isHasVehiclePictures() &&
+//                    !result.get(i).getPolicies().isHasOdometerPicture() &&
+            if (result.get(i).getPolicies().getReportState() == 4) {
+//            if(i>0){
+                result.remove(i);
+            }
+        }
+    }
+
     public void pageSwitcher() {
         timer = new Timer(); // At this line a new Thread will be created
         timer.schedule(new RemindTask(), 9000, 9000);
     }
+
     class RemindTask extends TimerTask {
         @Override
         public void run() {
@@ -265,30 +312,70 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                         JSONArray array = new JSONArray(res);
                         JSONObject o = array.getJSONObject(0);
                         JSONObject cupones = o.getJSONObject("Cupones");
+                        JSONObject cliente = o.getJSONObject("Client");
                         Double kms = cupones.getDouble("Kms");
+                        String c = cliente.getString("Cupon");
 
-                        InicializarBanners(kms);
+                        InicializarBanners(kms, c);
                         //Toast.makeText(PrincipalActivity.this, "kilometraje:"+ kms, Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        InicializarBanners(100.0);
+                        InicializarBanners(100.0, "...");
                     }
                 }else{
-                    InicializarBanners(100.0);
+                    InicializarBanners(100.0, "...");
                 }
             }
         });
         gp.execute();
     }
 
-    public void InicializarBanners(Double kms){
+    public void InicializarBanners(Double kms, String c){
+
+        viewPager = (ViewPager) findViewById(R.id.view_pager);
 
         String cupon = "";
         if (result != null && result.size() > 0) {
             cupon = result.get(0).getClient().getCupon();
+        }else{
+            cupon = c;
         }
-        adapter.updateBanners(kms.intValue(), cupon);
+        adapter = new PromosAdapter(this, cupon, kms.intValue());
+        viewPager.setAdapter(adapter);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            @Override
+            public void onPageSelected(int position) {
+                TextView tv = (TextView) findViewById(R.id.terms);
+                if (position == 1) {
+                    tv.setText("*Consulta términos y condiciones.");
+                } else {
+                    tv.setText("*Aplica un cupón al mes por póliza solo si \n" +
+                            "reportaste tu odómetro y pagaste el mes anterior.");
+                }
+                addBottomDots(position);
+                timer.cancel();
+                //pageSwitcher();
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+
+
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+            }
+        });
+        dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
+        dotsLayout.removeAllViews();
+        TextView tv = (TextView) findViewById(R.id.terms);
+        tv.setText("Aplica un cupón al mes por póliza solo si \n" +
+                "reportaste tu odómetro y pagaste el mes anterior.");
         addBottomDots(0);
+
+        //adapter.updateBanners(kms.intValue(), cupon);
+        //addBottomDots(0);
     }
 
     private void addBottomDots(int currentPage) {

@@ -958,7 +958,7 @@ public class LastOdometerActivity extends AppCompatActivity {
 //                                        startActivity(i);
 //                                    }
                                     Intent i = new Intent(LastOdometerActivity.this, PrincipalActivity.class);
-                                    i.putExtra("actualizar", "1");
+                                    //i.putExtra("actualizar", "1");
                                     startActivity(i);
                                 }
                             })
