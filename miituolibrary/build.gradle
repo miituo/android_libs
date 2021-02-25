@@ -32,24 +32,24 @@ task sourceJar(type: Jar) {
     classifier "sources"
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                groupId 'com.miituo.miituolibrary'
-                artifactId 'miituolibrary'
-                version '0.1'
-                artifact(sourceJar)
-                artifact("$buildDir/outputs/aar/Miituolibrary-release.aar")
-            }
-        }
-        repositories {
-            maven {
-                url "$buildDir/releases"
-            }
-        }
-    }
-}
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            mavenJava(MavenPublication) {
+//                groupId 'com.miituo.miituolibrary'
+//                artifactId 'miituolibrary'
+//                version '0.1'
+//                artifact(sourceJar)
+//                artifact("$buildDir/outputs/aar/Miituolibrary-release.aar")
+//            }
+//        }
+//        repositories {
+//            maven {
+//                url "$buildDir/releases"
+//            }
+//        }
+//    }
+//}
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
