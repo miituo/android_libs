@@ -115,11 +115,17 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //recyclerView.setAdapter(vadapter);
 
-        runOnUiThread(() -> {
-
-            recyclerView.setAdapter(vadapter);
-            vadapter.notifyDataSetChanged();
+        runOnUiThread(new Runnable() {
+            public void run() {
+                recyclerView.setAdapter(vadapter);
+                vadapter.notifyDataSetChanged();
+            }
         });
+        //runOnUiThread(() -> {
+
+            //recyclerView.setAdapter(vadapter);
+            //vadapter.notifyDataSetChanged();
+        //});
 
         pageSwitcher();
         obtenerCupon();
@@ -235,11 +241,18 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                         textViewNombre.setText(na);
 
                         removeInvalidPolicies();
-                        runOnUiThread(() -> {
-
-                            vadapter.updateReceiptsList(result);
-                            vadapter.notifyDataSetChanged();
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                vadapter.updateReceiptsList(result);
+                                vadapter.notifyDataSetChanged();
+                            }
                         });
+
+                        //runOnUiThread(() -> {
+
+                            //vadapter.updateReceiptsList(result);
+                            //vadapter.notifyDataSetChanged();
+                        //});
 
 
                         if(result.size() > 0) {
