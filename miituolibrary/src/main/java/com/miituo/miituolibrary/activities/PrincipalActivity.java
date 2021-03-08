@@ -243,8 +243,10 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                         removeInvalidPolicies();
                         runOnUiThread(new Runnable() {
                             public void run() {
+                                swipeContainer.setRefreshing(false);
+
                                 vadapter.updateReceiptsList(result);
-                                vadapter.notifyDataSetChanged();
+                                //vadapter.notifyDataSetChanged();
                             }
                         });
 
@@ -269,7 +271,7 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
 
                         //vList.setAdapter(vadapter);
                         //vadapter.notifyDataSetChanged();
-                        swipeContainer.setRefreshing(false);
+
                     }
                 }
             }

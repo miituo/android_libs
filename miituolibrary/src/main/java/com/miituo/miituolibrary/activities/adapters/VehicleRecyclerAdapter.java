@@ -44,8 +44,9 @@ public class VehicleRecyclerAdapter extends
     }
 
     public void updateReceiptsList(List<InfoClient> newlist) {
-        mInfoClientList.clear();
-        mInfoClientList.addAll(newlist);
+        //mInfoClientList.clear();
+        //mInfoClientList.addAll(newlist);
+        mInfoClientList = newlist;
         this.notifyDataSetChanged();
     }
 

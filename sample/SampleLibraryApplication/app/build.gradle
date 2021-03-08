@@ -47,7 +47,7 @@ dependencies {
 
     implementation (name: 'miituolibrary-debug', ext:'aar')
     //implementation 'com.github.johncristobal:miituo_android_lib:0.3.3'
-    //implementation 'com.github.miituo:android_libs:0.2.2'
+    //implementation 'com.github.miituo:android_libs:0.3.81'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
