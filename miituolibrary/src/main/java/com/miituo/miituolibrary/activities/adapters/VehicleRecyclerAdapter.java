@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -44,9 +45,16 @@ public class VehicleRecyclerAdapter extends
     }
 
     public void updateReceiptsList(List<InfoClient> newlist) {
+        final ItemDiffCallback diffCallback = new ItemDiffCallback(this.mInfoClientList, newlist);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        this.mInfoClientList.clear();
+        this.mInfoClientList.addAll(newlist);
+        diffResult.dispatchUpdatesTo(this);
+
         //mInfoClientList.clear();
         //mInfoClientList.addAll(newlist);
-        mInfoClientList = newlist;
+        //mInfoClientList = newlist;
         this.notifyDataSetChanged();
     }
 

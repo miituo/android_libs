@@ -137,6 +137,7 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
             public void onRefresh() {
                 getPolizasData(app_preferences.getString("Celphone", "0"));
             }
+
         });
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -240,38 +241,21 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                         TextView textViewNombre = findViewById(R.id.textViewNombre);
                         textViewNombre.setText(na);
 
+                        swipeContainer.setRefreshing(false);
                         removeInvalidPolicies();
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                swipeContainer.setRefreshing(false);
-
-                                vadapter.updateReceiptsList(result);
-                                //vadapter.notifyDataSetChanged();
-                            }
-                        });
-
-                        //runOnUiThread(() -> {
-
-                            //vadapter.updateReceiptsList(result);
-                            //vadapter.notifyDataSetChanged();
-                        //});
-
-
                         if(result.size() > 0) {
                             tokencliente = result.get(0).getClient().getToken();
                         }else{
                             tokencliente = "";
                         }
-
-//                        if(app_preferences.getInt("reload",-1) == -1){
-//                            obtenerCupon();
-//                            app_preferences.edit().putInt("reload",1).apply();
-//                        }
-
-
-                        //vList.setAdapter(vadapter);
-                        //vadapter.notifyDataSetChanged();
-
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                vadapter.updateReceiptsList(result);
+                                vadapter.updateReceiptsList(result);
+                                //vadapter.notifyDataSetChanged();
+                            }
+                        });
                     }
                 }
             }
