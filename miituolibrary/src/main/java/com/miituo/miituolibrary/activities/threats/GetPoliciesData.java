@@ -11,7 +11,7 @@ public class GetPoliciesData extends AsyncTask<String, Void, Void> {
 
     Context c;
     SimpleCallBack cb;
-    String ErrorCode=null, url="";
+    String ErrorCode="", url="";
     boolean status=false;
 
     public ProgressDialog progress;

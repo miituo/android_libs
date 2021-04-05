@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -112,13 +113,14 @@ public class DetallesActivity extends AppCompatActivity {
     }
 
     public void init(){
-        TextView lbDescargar = findViewById(R.id.textView37);
-        TextView poliza = findViewById(R.id.textViewpolizadetail);
-        //poliza.setTypeface(PagerAdapter.tipo);
-        poliza.setText(IinfoClient.InfoClientObject.getPolicies().getNoPolicy());
-        lbDescargar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        try {
+            TextView lbDescargar = findViewById(R.id.textView37);
+            TextView poliza = findViewById(R.id.textViewpolizadetail);
+            //poliza.setTypeface(PagerAdapter.tipo);
+            poliza.setText(IinfoClient.InfoClientObject.getPolicies().getNoPolicy());
+            lbDescargar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (
@@ -129,16 +131,20 @@ public class DetallesActivity extends AppCompatActivity {
                         } else {
                             callPDF();
                         }
-                    }else{
+                    } else {
                         callPDF();
                     }
-            }
-        });
+                }
+            });
 
-        ImageView fotocarro = (ImageView)findViewById(R.id.imageView5);
-        if(fotocarro!= null){
-            //pintaImg(imagen,position);
-            pintaImg(fotocarro, IinfoClient.InfoClientObject.getPolicies().getId());
+            ImageView fotocarro = (ImageView) findViewById(R.id.imageView5);
+            if (fotocarro != null) {
+                //pintaImg(imagen,position);
+                pintaImg(fotocarro, IinfoClient.InfoClientObject.getPolicies().getId());
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+            Toast.makeText(this, "Tuvimos un problema para recuperar tu información.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -200,21 +206,8 @@ public class DetallesActivity extends AppCompatActivity {
 
         Glide.with(this).asBitmap().
                 load(pathPhotos + id + "/FROM_VEHICLE.png")
-                //.into(iv);
-                .listener(new RequestListener<Bitmap>() {
-                              @Override
-                              public boolean onLoadFailed(@Nullable GlideException e, Object o, Target<Bitmap> target, boolean b) {
-                                  iv.setImageResource(R.drawable.foto);
-                                  return false;
-                              }
-
-                              @Override
-                              public boolean onResourceReady(Bitmap bitmap, Object o, Target<Bitmap> target, DataSource dataSource, boolean b) {
-                                  iv.setImageBitmap(bitmap);// .setImage(ImageSource.bitmap(bitmap));
-                                  return false;
-                              }
-                          }
-                ).submit();
-
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .error(R.drawable.foto)
+                .into(iv);
     }
 }

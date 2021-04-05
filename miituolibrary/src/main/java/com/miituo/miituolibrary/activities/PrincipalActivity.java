@@ -121,11 +121,6 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                 vadapter.notifyDataSetChanged();
             }
         });
-        //runOnUiThread(() -> {
-
-            //recyclerView.setAdapter(vadapter);
-            //vadapter.notifyDataSetChanged();
-        //});
 
         pageSwitcher();
         obtenerCupon();
@@ -248,14 +243,8 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                         }else{
                             tokencliente = "";
                         }
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                vadapter.updateReceiptsList(result);
-                                vadapter.updateReceiptsList(result);
-                                //vadapter.notifyDataSetChanged();
-                            }
-                        });
+                        vadapter.updateReceiptsList(result);
+                        vadapter.updateReceiptsList(result);
                     }
                 }
             }

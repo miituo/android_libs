@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -146,6 +147,7 @@ public class VehicleRecyclerAdapter extends
                 //v.setTag(mInfoClientList);
                 //update image upon statu pictures
                 //ImageView img=(ImageView)v.findViewById(R.id.StateImage);
+                img.setImageResource(R.drawable.blumiituo);
                 TxtInfo.setText("Ver información \n"+mInfoClientList.getPolicies().getVehicle().getSubtype().getDescription());
                 TxtMensajeLimite.setVisibility(View.GONE);
 
@@ -341,21 +343,9 @@ public class VehicleRecyclerAdapter extends
 
             Glide.with(mContext).asBitmap().
                     load(pathPhotos + id + "/FROM_VEHICLE.png")
-                    //.into(iv);
-                    .listener(new RequestListener<Bitmap>() {
-                                  @Override
-                                  public boolean onLoadFailed(@Nullable GlideException e, Object o, Target<Bitmap> target, boolean b) {
-                                      iv.setImageResource(R.drawable.vista_auto_2);
-                                      return false;
-                                  }
-
-                                  @Override
-                                  public boolean onResourceReady(Bitmap bitmap, Object o, Target<Bitmap> target, DataSource dataSource, boolean b) {
-                                      iv.setImageBitmap(bitmap);// .setImage(ImageSource.bitmap(bitmap));
-                                      return false;
-                                  }
-                              }
-                    ).submit();
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.foto)
+                    .into(iv);
 
         /*String filePathString = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+File.separator+"frontal"+time+mInfoClientList.get(position).getPolicies().getNoPolicy()+".png";
         String filePathStringfirst = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES)+File.separator+"frontal_"+mInfoClientList.get(position).getPolicies().getNoPolicy()+".png";

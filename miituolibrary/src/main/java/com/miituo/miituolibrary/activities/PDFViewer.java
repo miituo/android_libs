@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
@@ -58,17 +59,21 @@ public class PDFViewer extends AppCompatActivity implements OnPageChangeListener
     }
 
     private void displayPDF() {
-//        pdfView.fromAsset(SAMPLE_FILE)
-        pdfView.fromFile(DetallesActivity.pdf)
-                .defaultPage(pageNumber)
-                .enableSwipe(true)
+        try {
+            pdfView.fromFile(DetallesActivity.pdf)
+                    .defaultPage(pageNumber)
+                    .enableSwipe(true)
 
-                .swipeHorizontal(false)
-                .onPageChange(this)
-                .enableAnnotationRendering(true)
-                .onLoad(this)
-                .scrollHandle(new DefaultScrollHandle(this))
-                .load();
+                    .swipeHorizontal(false)
+                    .onPageChange(this)
+                    .enableAnnotationRendering(true)
+                    .onLoad(this)
+                    .scrollHandle(new DefaultScrollHandle(this))
+                    .load();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(this, "Tuvimos un problema para visualizar el documemto. Intente más tarde.", Toast.LENGTH_LONG).show();
+        }
     }
 
 
