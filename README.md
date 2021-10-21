@@ -27,9 +27,11 @@ Finalmente agregamos la dependecia
 
 ```
 dependencies {
-implementation 'com.github.miituo:android_libs:0.3.8'
+implementation 'com.github.miituo:android_libs:0.4.0'
 ...
 ```
+## IMPORTANTE:
+La versión 0.4.0 corre apartir de la target 30 de android, para versiones posteriores, seguir usando la version 0.3.91
 
 ## Uso:
 
