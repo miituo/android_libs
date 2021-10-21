@@ -13,7 +13,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -27,7 +26,9 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,12 +37,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.miituo.miituolibrary.R;
 import com.miituo.miituolibrary.activities.api.ApiClient;
 import com.miituo.miituolibrary.activities.data.IinfoClient;
+import com.miituo.miituolibrary.activities.threats.UploadImageContract;
+import com.miituo.miituolibrary.activities.utils.ImageCustomUtils;
+import com.miituo.miituolibrary.activities.utils.SimpleCallBack;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 public class VehiclePictures extends AppCompatActivity {
@@ -63,11 +66,16 @@ public class VehiclePictures extends AppCompatActivity {
     public boolean flag1,flag2,flag3,flag4;
     public boolean flag1valida,flag2valida,flag3valida,flag4valida;
     Uri image_uri,image_uri1,image_uri2,image_uri3,image_uri4;
+
+    private Button btn1;
     private ApiClient api;
 
-    public sendVehiclePicture hilofotos;
+    //public sendVehiclePicture hilofotos;
     public boolean breakThread;
     public String polizaFolio,tok;
+
+    private ImageView finishImageFrontal, finishImageDerecho, finishImageTrasera, finishImageIzquierdo;
+    private ProgressBar loadingFrontal, loadingDerecho, loadingTrasera, loadingIzquierdo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,8 +106,19 @@ public class VehiclePictures extends AppCompatActivity {
         flag4valida = false;
 
         breakThread = false;
-        hilofotos = new sendVehiclePicture();
+        //hilofotos = new sendVehiclePicture();
         api=new ApiClient(VehiclePictures.this);
+
+        btn1 = findViewById(R.id.btn1);
+        loadingFrontal = findViewById(R.id.loadingFrontal);
+        loadingDerecho = findViewById(R.id.loadingDerecho);
+        loadingTrasera = findViewById(R.id.loadingTrasera);
+        loadingIzquierdo = findViewById(R.id.loadingIzquierdo);
+
+        finishImageFrontal = findViewById(R.id.finishImageFrontal);
+        finishImageDerecho = findViewById(R.id.finishImageDerecho);
+        finishImageTrasera = findViewById(R.id.finishImageTrasera);
+        finishImageIzquierdo = findViewById(R.id.finishImageIzquierdo);
 
         Img1 = findViewById(R.id.Img1);
         Img1.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +195,29 @@ public class VehiclePictures extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        btn1.setAlpha(1f);
+        btn1.setEnabled(true);
+
+        loadingFrontal.setVisibility(View.INVISIBLE);
+        loadingDerecho.setVisibility(View.INVISIBLE);
+        loadingTrasera.setVisibility(View.INVISIBLE);
+        loadingIzquierdo.setVisibility(View.INVISIBLE);
+
+        finishImageFrontal.setVisibility(View.INVISIBLE);
+        finishImageDerecho.setVisibility(View.INVISIBLE);
+        finishImageTrasera.setVisibility(View.INVISIBLE);
+        finishImageIzquierdo.setVisibility(View.INVISIBLE);
+
+        Img1.setAlpha(1f);
+        Img2.setAlpha(1f);
+        Img3.setAlpha(1f);
+        Img4.setAlpha(1f);
+    }
+
     public void openCamera(int type){
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "New Picture");
@@ -198,137 +240,6 @@ public class VehiclePictures extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "No se pueden tomar fotos. Acceso denegado.", Toast.LENGTH_LONG).show();
             }
-        }
-    }
-
-    public void showAlertaFoto(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(VehiclePictures.this);
-        builder.setTitle("Atención");
-        builder.setMessage("No podemos abrir tu cámara. Revisa el dispositivo.");
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent i=new Intent(VehiclePictures.this,PrincipalActivity.class);
-                startActivity(i);
-            }
-        });
-
-        AlertDialog alerta = builder.create();
-        alerta.show();
-    }
-
-    public void tomarfoto(int p,String name, boolean isupper23){
-        if (Build.VERSION.SDK_INT < 23) {
-            Intent takepic = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takepic.resolveActivity(getPackageManager()) != null) {
-                // Create the File where the photo should go
-                try {
-                    photoFile = createImageFile(name,p);
-                } catch (IOException ex) {
-                    // Error occurred while creating the File...
-                    showAlertaFoto();
-                }
-                // Continue only if the File was successfully created
-                if (photoFile != null) {
-                    //Uri photoURI = FileProvider.getUriForFile(VehicleOdometer.this, "miituo.com.miituo.provider", photoFile);
-                    Uri photoURI = Uri.fromFile(photoFile);
-                    takepic.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takepic, p);
-//                    Intent i= new Intent(this,CamActivity.class);
-//                    i.putExtra("img",photoFile);
-//                    startActivityForResult(i,ODOMETER);
-                }
-            }
-        }else{
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                //PERMISO = FRONT_VEHICLE;
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
-            }else{
-                Intent takepic = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takepic.resolveActivity(getPackageManager()) != null) {
-                    // Create the File where the photo should go
-                    try {
-                        photoFile = createImageFile(name,p);
-                    } catch (IOException ex) {
-                        // Error occurred while creating the File...
-                        showAlertaFoto();
-                    }
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(VehiclePictures.this, "com.miituo.miituolibrary.provider", photoFile);
-                        //Uri photoURI = Uri.fromFile(photoFile);
-                        takepic.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                        startActivityForResult(takepic, p);
-//                        Intent i= new Intent(this,CamActivity.class);
-//                        i.putExtra("img",photoFile);
-//                        startActivityForResult(i,ODOMETER);
-                    }
-                }
-            }
-        }
-//        Intent takepic=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-////        try {
-////            startActivityForResult(takepic, MY_CAMERA_REQUEST_CODE);
-////        }catch (Exception ex) {
-////            ex.printStackTrace();
-////            // Error occurred while creating the File...
-////        }
-////        startActivityForResult(i, FRONT_VEHICLE);
-//        if (takepic.resolveActivity(getPackageManager()) != null) {
-//            // Create the File where the photo should go
-//            try {
-//                photoFile = createImageFile(name,p);
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//                // Error occurred while creating the File...
-//            }
-//            // Continue only if the File was successfully created
-//            if (photoFile != null) {
-//                Uri photoURI;
-//                photoURI = FileProvider.getUriForFile(VehiclePictures.this, "com.miituo.miituolibrary.provider", photoFile);
-////                if(isupper23) {
-////                    photoURI = FileProvider.getUriForFile(VehiclePictures.this, "com.miituo.miituolibrary.provider", photoFile);
-////                }
-////                else{
-////                    photoURI = Uri.fromFile(photoFile);
-////                }
-//                takepic.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//                startActivityForResult(takepic, p);
-//            }else{
-//                Toast.makeText(this,"Tuvimos un problema al tomar la imagen. Intente mas tarde.",Toast.LENGTH_SHORT).show();
-//            }
-//        }
-    }
-
-    private File createImageFile(String username, int tag) throws IOException {
-        // Create an image file name
-        try {
-
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = "PNG_" + timeStamp + "_";
-            File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            //File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-
-            File image = File.createTempFile(
-                    imageFileName,  // prefix
-                    ".jpeg",         // suffix
-                    storageDir      // directory
-            );
-
-            //File image = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES)+File.separator+"odometro_"+polizaFolio+".png");
-
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = image.getAbsolutePath();
-
-//            SharedPreferences preferences = getSharedPreferences("miituo", Context.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = preferences.edit();
-//            editor.putString("nombrefotoodometro", mCurrentPhotoPath);
-//            editor.apply();
-            return image;
-
-        }catch(Exception e){
-            e.printStackTrace();
-            return null;
         }
     }
 
@@ -427,26 +338,144 @@ public class VehiclePictures extends AppCompatActivity {
         }
     }
 
+//******************************Thread to upload files**********************************************
     public void subirFotos(View v){
         //valida si ya subio todas las fotosv
         //if (ImageList.size() > 3 && !IinfoClient.InfoClientObject.getPolicies().isHasVehiclePictures()) {
         if (flag1 && flag2 && flag3 && flag4) {
 
             try {
-                hilofotos.execute();
 
+                //hilofotos.execute();
                 //sendVehiclePicture.execute();//.get(10000, TimeUnit.MILLISECONDS);
+                Img1.setAlpha(0.5f);
+                Img2.setAlpha(0.5f);
+                Img3.setAlpha(0.5f);
+                Img4.setAlpha(0.5f);
+
+                btn1.setAlpha(0.5f);
+                btn1.setEnabled(false);
+
+                loadingDerecho.setVisibility(View.VISIBLE);
+                loadingTrasera.setVisibility(View.VISIBLE);
+                loadingFrontal.setVisibility(View.VISIBLE);
+                loadingIzquierdo.setVisibility(View.VISIBLE);
+
+                Bitmap bit = ImageCustomUtils.getBitmap(VehiclePictures.this, image_uri1);
+                new UploadImageContract(this, 1, tok, bit, new SimpleCallBack() {
+                    @Override
+                    public void run(boolean status, String res) {
+                        if(status) {
+                            loadingFrontal.setVisibility(View.INVISIBLE);
+                            finishImageFrontal.setVisibility(View.VISIBLE);
+                            ImageCustomUtils.launchImage(finishImageFrontal);
+
+                            Bitmap bit2 = ImageCustomUtils.getBitmap(VehiclePictures.this, image_uri2);
+                            new UploadImageContract(VehiclePictures.this, 2, tok, bit2, new SimpleCallBack() {
+                                @Override
+                                public void run(boolean status2, String res2) {
+                                    if(status2) {
+                                        loadingDerecho.setVisibility(View.INVISIBLE);
+                                        finishImageDerecho.setVisibility(View.VISIBLE);
+                                        ImageCustomUtils.launchImage(finishImageDerecho);
+
+                                        Bitmap bit3 = ImageCustomUtils.getBitmap(VehiclePictures.this, image_uri3);
+                                        new UploadImageContract(VehiclePictures.this, 3, tok, bit3, new SimpleCallBack() {
+                                            @Override
+                                            public void run(boolean status3, String res3) {
+                                                if(status3) {
+                                                    loadingTrasera.setVisibility(View.INVISIBLE);
+                                                    finishImageTrasera.setVisibility(View.VISIBLE);
+                                                    ImageCustomUtils.launchImage(finishImageTrasera);
+
+                                                    Bitmap bit4 = ImageCustomUtils.getBitmap(VehiclePictures.this, image_uri4);
+                                                    new UploadImageContract(VehiclePictures.this, 4, tok, bit4, new SimpleCallBack() {
+                                                        @Override
+                                                        public void run(boolean status4, String res4) {
+                                                            if(status4){
+                                                                loadingIzquierdo.setVisibility(View.INVISIBLE);
+                                                                finishImageIzquierdo.setVisibility(View.VISIBLE);
+                                                                ImageCustomUtils.launchImage(finishImageIzquierdo);
+
+                                                                finishUpload();
+                                                            }else{
+                                                                showAlerta();
+                                                            }
+                                                        }
+                                                    }).execute();
+
+                                                }else{
+                                                    showAlerta();
+                                                }
+                                            }
+                                        }).execute();
+                                    }else{
+                                        showAlerta();
+                                    }
+                                }
+                            }).execute();
+                        }else{
+                            showAlerta();
+                        }
+                    }
+                }).execute();
+
             }
             catch(Exception e){
                 //so much time to upload photos...so break thread and continue...
                 Log.e("Error","Se acabo el tiempo...");
-                hilofotos.cancel(true);
+                //hilofotos.cancel(true);
             }
         } else {
             //si no ha subido las fotos...err
             Toast msg = Toast.makeText(getApplicationContext(), "Falta tomar las fotos obligatorias.", Toast.LENGTH_LONG);
             msg.show();
         }
+    }
+
+    public void finishUpload(){
+        try {
+            new android.app.AlertDialog.Builder(VehiclePictures.this)
+                    .setTitle("Fotos de Vehículo")
+                    .setMessage("Las fotos se han subido correctamente. !Gracias¡")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            IinfoClient.InfoClientObject.getPolicies().setHasVehiclePictures(true);
+
+                            //valido foto de odometro tmb antes de lanzar a sendodometer***
+                            Intent odo = new Intent(VehiclePictures.this, VehicleOdometer.class);
+                            startActivity(odo);
+                        }
+                    })
+                    .show();
+        }catch(Exception e){
+            showAlerta();
+        }
+    }
+
+    public void showAlerta(){
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(VehiclePictures.this);
+        builder.setTitle("Atención.");
+        builder.setMessage("Hubo un problema al subir las fotos. Lo intentaremos más tarde.");
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                //change this...now launch odometer if error...
+                IinfoClient.InfoClientObject.getPolicies().setHasVehiclePictures(false);
+                //Intent odo = new Intent(VehiclePictures.this, VehicleOdometer.class);
+                //startActivity(odo);
+
+                //Intent i=new Intent(VehiclePictures.this,PrincipalActivity.class);
+                //startActivity(i);
+                finish();
+            }
+        });
+
+        android.app.AlertDialog alerta = builder.create();
+        alerta.show();
     }
 
 //*******************************************not attribute =! class*********************************
@@ -599,30 +628,6 @@ public class VehiclePictures extends AppCompatActivity {
             }
             return null;
         }
-//        private void launchImagen(String username,int tipo) {
-//
-//            try {
-//                SharedPreferences preferences = getSharedPreferences("miituo", Context.MODE_PRIVATE);
-//                mCurrentPhotoPath = preferences.getString("nombrefoto" + username + polizaFolio, "null");
-//
-//                String filePath = mCurrentPhotoPath;
-//
-//                BitmapFactory.Options options = new BitmapFactory.Options();
-//                options.inSampleSize = 4;
-//                Bitmap bit = BitmapFactory.decodeFile(filePath, options);
-//
-//                int a = api.UploadPhoto(tipo, bit, UrlApi, tok,"","0","0","");
-//                if (a <= 4 && a != 0) {
-//                    progress.incrementProgressBy(1);
-//                    cont++;
-//                }
-//            }catch(Exception e){
-//                ErrorCode = e.toString();
-//                LogHelper.log(VehiclePictures.this,LogHelper.backTask,"VehiclePictures.sendVehiclePictures.launchImage","",
-//                        "", "","",LogHelper.getException(e));
-//                this.cancel(true);
-//            }
-//        }
 
         @Override
         protected void onPostExecute(Void aVoid) {

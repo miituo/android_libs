@@ -3,8 +3,9 @@ package com.miituo.miituolibrary.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.dynamicanimation.animation.DynamicAnimation;
+import androidx.dynamicanimation.animation.SpringAnimation;
 
 import android.Manifest;
 import android.app.Activity;
@@ -18,10 +19,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -33,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +40,7 @@ import com.miituo.miituolibrary.R;
 import com.miituo.miituolibrary.activities.api.ApiClient;
 import com.miituo.miituolibrary.activities.data.IinfoClient;
 import com.miituo.miituolibrary.activities.data.InfoClient;
+import com.miituo.miituolibrary.activities.utils.ImageCustomUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -72,7 +71,9 @@ public class VehicleOdometer extends AppCompatActivity {
     final int ODOMETER=5,CANCEL=9;
     public sendOdometro sendodo;
 
-    ImageView Img5;
+    private ImageView Img5, finishImage;
+    private ProgressBar loadingOdometer;
+
     SharedPreferences app_preferences;
     public String tipoodometro;
     boolean IsTaken =false;
@@ -96,6 +97,9 @@ public class VehicleOdometer extends AppCompatActivity {
         }
 
         TextView btnSinAuto = (TextView)findViewById(R.id.btnSinAuto);
+        finishImage = findViewById(R.id.finishImage);
+        loadingOdometer = findViewById(R.id.loadingOdometer);
+
         if(getIntent().getBooleanExtra("isCancelada",false)){
             btnSinAuto.setVisibility(View.VISIBLE);
             btnSinAuto.setEnabled(true);
@@ -143,6 +147,17 @@ public class VehicleOdometer extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btn6.setAlpha(1f);
+        btn6.setEnabled(true);
+
+        loadingOdometer.setVisibility(View.INVISIBLE);
+        finishImage.setVisibility(View.INVISIBLE);
+        Img5.setAlpha(1f);
+    }
+
     public void openCamera(){
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "New Picture");
@@ -152,59 +167,6 @@ public class VehicleOdometer extends AppCompatActivity {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
         startActivityForResult(cameraIntent, ODOMETER);
-    }
-
-    public void tomarFotografia(){
-
-
-        if (Build.VERSION.SDK_INT < 23) {
-            Intent takepic = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takepic.resolveActivity(getPackageManager()) != null) {
-                // Create the File where the photo should go
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException ex) {
-                    // Error occurred while creating the File...
-                    showAlertaFoto();
-                }
-                // Continue only if the File was successfully created
-                if (photoFile != null) {
-                    //Uri photoURI = FileProvider.getUriForFile(VehicleOdometer.this, "miituo.com.miituo.provider", photoFile);
-                    Uri photoURI = Uri.fromFile(photoFile);
-                    takepic.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takepic, ODOMETER);
-//                    Intent i= new Intent(this,CamActivity.class);
-//                    i.putExtra("img",photoFile);
-//                    startActivityForResult(i,ODOMETER);
-                }
-            }
-        }else{
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                //PERMISO = FRONT_VEHICLE;
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
-            }else{
-                Intent takepic = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takepic.resolveActivity(getPackageManager()) != null) {
-                    // Create the File where the photo should go
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
-                        // Error occurred while creating the File...
-                        showAlertaFoto();
-                    }
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        Uri photoURI = FileProvider.getUriForFile(VehicleOdometer.this, "com.miituo.miituolibrary.provider", photoFile);
-                        //Uri photoURI = Uri.fromFile(photoFile);
-                        takepic.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                        startActivityForResult(takepic, ODOMETER);
-//                        Intent i= new Intent(this,CamActivity.class);
-//                        i.putExtra("img",photoFile);
-//                        startActivityForResult(i,ODOMETER);
-                    }
-                }
-            }
-        }
     }
 
     @Override
@@ -386,42 +348,13 @@ public class VehicleOdometer extends AppCompatActivity {
         alerta.show();
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        try {
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = "PNG_" + timeStamp + "_";
-            File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            //File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-
-            File image = File.createTempFile(
-                    imageFileName,  // prefix
-                    ".jpeg",         // suffix
-                    storageDir      // directory
-            );
-
-            //File image = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES)+File.separator+"odometro_"+polizaFolio+".png");
-
-            // Save a file: path for use with ACTION_VIEW intents
-            mCurrentPhotoPath = image.getAbsolutePath();
-
-//            SharedPreferences preferences = getSharedPreferences("miituo", Context.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = preferences.edit();
-//            editor.putString("nombrefotoodometro", mCurrentPhotoPath);
-//            editor.apply();
-            return image;
-        }catch(Exception e){
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public void sinAuto(View v){
         new getCobroTask().execute(false);
     }
+
 //*******************************************not attribute =! class*********************************
     public class sendOdometro extends AsyncTask<String, Void, Void> {
-        ProgressDialog progress = new ProgressDialog(VehicleOdometer.this);
+        //ProgressDialog progress = new ProgressDialog(VehicleOdometer.this);
         String ErrorCode = "";
         String isFoto = "OK";
 
@@ -444,12 +377,10 @@ public class VehicleOdometer extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             try {
-                progress.setTitle("Registro de odómetro");
-                progress.setMessage("Subiendo imagen...");
-                //progress.setIcon(R.drawable.miituo);
-                progress.setCancelable(false);
-                progress.setIndeterminate(true);
-                progress.show();
+                btn6.setAlpha(0.5f);
+                btn6.setEnabled(false);
+                Img5.setAlpha(0.5f);
+                loadingOdometer.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 showAlerta();
             }
@@ -517,14 +448,31 @@ public class VehicleOdometer extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
 
             try {
-                progress.dismiss();
-                if(isFoto.equals("NO")){
-                    new getCobroTask().execute(true);
-                }
-                else {
-                    Intent i = new Intent(VehicleOdometer.this, ConfirmActivity.class);
-                    startActivity(i);
-                }
+                loadingOdometer.setVisibility(View.INVISIBLE);
+                finishImage.setVisibility(View.VISIBLE);
+
+                SpringAnimation springAnimX = new SpringAnimation(finishImage, SpringAnimation.SCALE_X);
+                SpringAnimation springAnimY = new SpringAnimation(finishImage, SpringAnimation.SCALE_Y);
+
+                springAnimX.setSpring(ImageCustomUtils.animSpring());
+                springAnimY.setSpring(ImageCustomUtils.animSpring());
+
+                springAnimX.addEndListener(new DynamicAnimation.OnAnimationEndListener() {
+                    @Override
+                    public void onAnimationEnd(DynamicAnimation animation, boolean canceled, float value, float velocity) {
+                        if(isFoto.equals("NO")){
+                            new getCobroTask().execute(true);
+                        }
+                        else {
+                            Intent i = new Intent(VehicleOdometer.this, ConfirmActivity.class);
+                            startActivity(i);
+                        }
+                    }
+                });
+
+                springAnimX.start();
+                springAnimY.start();
+
             }
             catch (Exception e){
                 showAlerta();
@@ -534,7 +482,8 @@ public class VehicleOdometer extends AppCompatActivity {
         @Override
         protected void onCancelled() {
             try {
-                progress.dismiss();
+                loadingOdometer.setVisibility(View.INVISIBLE);
+                finishImage.setVisibility(View.VISIBLE);
                 if (ErrorCode.equals("1000")) {
                     Intent i = new Intent(VehicleOdometer.this, ConfirmActivity.class);
                     startActivity(i);

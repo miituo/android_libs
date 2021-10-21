@@ -2,6 +2,7 @@ package com.miituo.miituolibrary.activities;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -11,24 +12,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.faltenreich.skeletonlayout.Skeleton;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.miituo.miituolibrary.R;
 import com.miituo.miituolibrary.activities.adapters.PromosAdapter;
-import com.miituo.miituolibrary.activities.adapters.VehicleModelAdapter;
 import com.miituo.miituolibrary.activities.adapters.VehicleRecyclerAdapter;
-import com.miituo.miituolibrary.activities.api.ApiClient;
 import com.miituo.miituolibrary.activities.data.IinfoClient;
 import com.miituo.miituolibrary.activities.data.InfoClient;
 import com.miituo.miituolibrary.activities.threats.GetCuponAsync;
@@ -66,6 +63,13 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
     private RecyclerView recyclerView;
     public static List<InfoClient> result;
     static AlertDialog alerta;
+
+    public Double kms = 0.0;
+    public TextView nombre, resumen, sinPolizas;
+    ImageView imgSinPolizas;
+    private ConstraintLayout skeletonView, constraintDataParent;
+    //private RecyclerViewSkeletonScreen.Builder skeletonLast;
+    private Skeleton skeletonLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +110,12 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
             app_preferences.edit().putInt("dev", 1).apply();
         }
 
+        skeletonView = findViewById(R.id.skeletonView);
+        constraintDataParent = findViewById(R.id.constraintDataParent);
+        skeletonLayout = findViewById(R.id.skeletonLayout);
+        sinPolizas = (TextView) findViewById(R.id.lbSinPolizas);
+        imgSinPolizas = (ImageView) findViewById(R.id.imgSinPolizas);
+
         result = new ArrayList<>();
         long starttime = app_preferences.getLong("time", 0);
         //vadapter = new VehicleModelAdapter(getApplicationContext(), result, starttime, PrincipalActivity.this);
@@ -113,17 +123,19 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
         vadapter = new VehicleRecyclerAdapter(getApplicationContext(), result, starttime, PrincipalActivity.this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //recyclerView.setAdapter(vadapter);
 
-        runOnUiThread(new Runnable() {
-            public void run() {
-                recyclerView.setAdapter(vadapter);
-                vadapter.notifyDataSetChanged();
-            }
-        });
+        result = new ArrayList<InfoClient>(){};
+        vadapter = new VehicleRecyclerAdapter(getApplicationContext(), result, starttime, PrincipalActivity.this);
+        recyclerView.setAdapter(vadapter);
+
+//        runOnUiThread(new Runnable() {
+//            public void run() {
+//                recyclerView.setAdapter(vadapter);
+//                vadapter.notifyDataSetChanged();
+//            }
+//        });
 
         pageSwitcher();
-        obtenerCupon();
 
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
@@ -139,55 +151,6 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        //vList = (ListView) findViewById(R.id.listviewinfoclient);
-        //vList.setAdapter(vadapter);
-
-//        viewPager = (ViewPager) findViewById(R.id.view_pager);
-//        String cupon = "...";
-//        if (result != null && result.size() > 0) {
-//            cupon = result.get(0).getClient().getCupon();
-//        }
-//
-//        adapter = new PromosAdapter(this, cupon, 100);
-//        //viewPager.setAdapter(adapter);
-//        runOnUiThread(() -> {
-//            viewPager.setAdapter(adapter);
-//        });
-//
-//        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                TextView tv = (TextView) findViewById(R.id.terms);
-//                if (position == 1) {
-//                    tv.setText("*Consulta términos y condiciones.");
-//                } else {
-//                    tv.setText("*Aplica un cupón al mes por póliza solo si \n" +
-//                            "reportaste tu odómetro y pagaste el mes anterior.");
-//                }
-//                addBottomDots(position);
-//                timer.cancel();
-//                pageSwitcher();
-//            }
-//
-//            @Override
-//            public void onPageScrolled(int arg0, float arg1, int arg2) {
-//            }
-//
-//
-//            @Override
-//            public void onPageScrollStateChanged(int arg0) {
-//            }
-//        });
-//
-//        dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
-//        dotsLayout.removeAllViews();
-//        TextView tv = (TextView) findViewById(R.id.terms);
-//        tv.setText("Aplica un cupón al mes por póliza solo si \n" +
-//                "reportaste tu odómetro y pagaste el mes anterior.");
-//        addBottomDots(0);
-//        pageSwitcher();
-//
         ImageView imageViewClose = findViewById(R.id.imageViewClose);
         imageViewClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,8 +167,20 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
         getPolizasData(telefono);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(timer != null)
+            timer.cancel();
+    }
+
     public void getPolizasData(final String telefono){
         String url = "InfoClientMobil/Celphone/"+telefono;
+
+        constraintDataParent.setVisibility(View.INVISIBLE); // hide data
+        skeletonView.setVisibility(View.VISIBLE);   // show skeleton
+        skeletonLayout.showSkeleton();
+
         new GetPoliciesData(url, PrincipalActivity.this, new SimpleCallBack() {
             @Override
             public void run(boolean status, String res) {
@@ -236,17 +211,26 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                         TextView textViewNombre = findViewById(R.id.textViewNombre);
                         textViewNombre.setText(na);
 
-                        swipeContainer.setRefreshing(false);
                         removeInvalidPolicies();
+
+                        vadapter.updateReceiptsList(result);
+                        vadapter.notifyDataSetChanged();
+
                         if(result.size() > 0) {
                             tokencliente = result.get(0).getClient().getToken();
                         }else{
                             tokencliente = "";
                         }
-                        vadapter.updateReceiptsList(result);
-                        vadapter.updateReceiptsList(result);
+
+                        swipeContainer.setRefreshing(false);
+                        obtenerCupon();
                     }
                 }
+
+                skeletonLayout.showOriginal();
+                skeletonView.setVisibility(View.INVISIBLE); //hide skeleton
+                constraintDataParent.setVisibility(View.VISIBLE); // show data
+
             }
         }).execute();
     }
@@ -287,6 +271,7 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
         }
     }
 
+//TODO - obtener cupon y mostrarlo en los banners---------------------------------------------------
     public void obtenerCupon(){
         String url = "Cupon/getReferredClientCoupon/"+app_preferences.getString("Celphone", "0");
         GetCuponAsync gp = new GetCuponAsync(PrincipalActivity.this, url, new SimpleCallBack(){
@@ -300,33 +285,31 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                         JSONArray array = new JSONArray(res);
                         JSONObject o = array.getJSONObject(0);
                         JSONObject cupones = o.getJSONObject("Cupones");
-                        JSONObject cliente = o.getJSONObject("Client");
-                        Double kms = cupones.getDouble("Kms");
-                        String c = cliente.getString("Cupon");
+                        kms = cupones.getDouble("Kms");
 
-                        InicializarBanners(kms, c);
+                        InicializarBanners();
                         //Toast.makeText(PrincipalActivity.this, "kilometraje:"+ kms, Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        InicializarBanners(100.0, "...");
+                        kms = 100.0;
+                        InicializarBanners();
                     }
                 }else{
-                    InicializarBanners(100.0, "...");
+                    kms = 100.0;
+                    InicializarBanners();
                 }
             }
         });
         gp.execute();
     }
 
-    public void InicializarBanners(Double kms, String c){
+    public void InicializarBanners(){
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
 
         String cupon = "";
         if (result != null && result.size() > 0) {
             cupon = result.get(0).getClient().getCupon();
-        }else{
-            cupon = c;
         }
         adapter = new PromosAdapter(this, cupon, kms.intValue());
         viewPager.setAdapter(adapter);
@@ -343,7 +326,7 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                 }
                 addBottomDots(position);
                 timer.cancel();
-                //pageSwitcher();
+                pageSwitcher();
             }
 
             @Override

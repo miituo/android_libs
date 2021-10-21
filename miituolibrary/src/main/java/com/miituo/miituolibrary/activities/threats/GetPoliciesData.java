@@ -14,21 +14,14 @@ public class GetPoliciesData extends AsyncTask<String, Void, Void> {
     String ErrorCode="", url="";
     boolean status=false;
 
-    public ProgressDialog progress;
-
     public GetPoliciesData(String url, Context c, SimpleCallBack cb){
         this.c = c;
         this.cb=cb;
         this.url=url;
-        progress = new ProgressDialog(c);
     }
 
     @Override
     protected void onPreExecute() {
-        progress.setMessage("Consultando información");
-        progress.setIndeterminate(true);
-        progress.setCancelable(false);
-        progress.show();
     }
 
     @Override
@@ -71,9 +64,6 @@ public class GetPoliciesData extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         try {
-            if (progress != null) {
-                progress.dismiss();
-            }
             cb.run(status, ErrorCode);
         }catch(Exception e){
             e.printStackTrace();
@@ -84,10 +74,6 @@ public class GetPoliciesData extends AsyncTask<String, Void, Void> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
-
-        if(progress!=null){
-            progress.dismiss();
-        }
 
         cb.run(status,ErrorCode);
 

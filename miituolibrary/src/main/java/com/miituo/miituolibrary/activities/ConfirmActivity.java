@@ -17,17 +17,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.miituo.miituolibrary.R;
 import com.miituo.miituolibrary.activities.data.IinfoClient;
+import com.miituo.miituolibrary.activities.utils.TextWatcherCustom;
 
 public class ConfirmActivity extends AppCompatActivity {
+
+    TextInputLayout odometer_layout;
+    TextInputEditText odometro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
-        EditText editlast = (EditText)findViewById(R.id.editTextLast);
+        odometer_layout = findViewById(R.id.odometer_layout);
+        odometro = findViewById(R.id.editTextConfirma);
+        odometro.addTextChangedListener(new TextWatcherCustom(odometer_layout));
 
         SharedPreferences preferences = getSharedPreferences(getString(R.string.shared_name_prefs), Context.MODE_PRIVATE);
         String mCurrentPhotoPath = preferences.getString("nombrefotoodometro", "null");
@@ -39,22 +47,6 @@ public class ConfirmActivity extends AppCompatActivity {
 
         ImageView vistaodo = findViewById(R.id.imageView17);
         vistaodo.setImageBitmap(bmp);
-
-        try {
-            int a = IinfoClient.InfoClientObject.getPolicies().getLastOdometer();
-
-            if (a == 0) {
-                RelativeLayout ultimo = (RelativeLayout) findViewById(R.id.relativeLayout5);
-                ultimo.setVisibility(View.GONE);
-
-                //RelativeLayout ahora = (RelativeLayout)findViewById(R.id.relativeLayout4);
-            } else {
-                editlast.setText(a + "");
-                editlast.setEnabled(false);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
     }
 
     public void validar(View v){
@@ -62,11 +54,10 @@ public class ConfirmActivity extends AppCompatActivity {
         //validar no sea ""
         //lanzar nuevo actiivty con valor para confimar del otro lado...
 
-        EditText odometro = (EditText)findViewById(R.id.editTextConfirma);
         String odo = odometro.getText().toString();
 
         if(odo.equals("")){
-            Toast.makeText(this,"Es necesario capturar los kms. que marca el odómetro.",Toast.LENGTH_SHORT).show();
+            odometer_layout.setHelperText("Captura los kms. que marca el odómetro.");
         }else{
             //launch activity and save odometro
             Intent i = new Intent(this,LastOdometerActivity.class);

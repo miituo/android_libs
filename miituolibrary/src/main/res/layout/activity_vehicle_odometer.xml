@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,63 +13,89 @@
         android:id="@+id/img5"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/camara" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="12dp"
+        app:srcCompat="@drawable/ic_menu_camera" />
 
-    <TextView
-        android:id="@+id/btnSinAuto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
+    <ProgressBar
+        android:id="@+id/loadingOdometer"
+        android:layout_width="78dp"
+        android:layout_height="78dp"
+        android:indeterminateTint="@color/azul_miituo"
+        android:indeterminate="true"
         android:visibility="invisible"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="11dp"
-        android:onClick="sinAuto"
-        android:text="Ya no tengo mi auto"
-        android:textSize="17sp"
-        android:textColor="@color/colorPrimaryDark"
-        tools:ignore="OnClick" />
+        app:layout_constraintBottom_toBottomOf="@+id/img5"
+        app:layout_constraintEnd_toEndOf="@+id/img5"
+        app:layout_constraintStart_toStartOf="@+id/img5"
+        app:layout_constraintTop_toTopOf="@+id/img5" />
 
-    <Button
-        android:id="@+id/btn6"
-        android:layout_width="165dp"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btnSinAuto"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="11dp"
-        android:background="@drawable/button"
-        android:onClick="subirFoto"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        android:text="Tomar fotografía"
-        android:textColor="@android:color/white" />
+    <ImageView
+        android:id="@+id/finishImage"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@drawable/comprobar"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/img5"
+        app:layout_constraintEnd_toEndOf="@+id/img5"
+        app:layout_constraintStart_toStartOf="@+id/img5"
+        app:layout_constraintTop_toTopOf="@+id/img5" />
 
     <TextView
         android:id="@+id/textView38"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/img5"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
-        android:text="Toma una fotografía de tu odómetro"
+        app:layout_constraintTop_toBottomOf="@id/img5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:text="Fotografía del odómetro"
         android:textSize="18sp" />
 
     <TextView
         android:id="@+id/textView40"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView38"
-        android:layout_centerHorizontal="true"
-        android:layout_marginEnd="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView38"
+        android:layout_marginHorizontal="44dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="Asegurate de que la iluminación sea la adecuada para que la foto sea clara y los números visibles."
+        android:text="Toma la fotografía de tu odómetro, asegurate de que la iluminación sea la adecuada para que la foto sea clara y los números visibles."
         android:textSize="16sp" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/btn6"
+        android:layout_width="165dp"
+        android:layout_height="44dp"
+        android:background="@drawable/button"
+        android:onClick="subirFoto"
+        app:layout_constraintTop_toBottomOf="@id/textView40"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:theme="@style/textButtonPrimary"
+        android:text="Tomar fotografía"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/btnSinAuto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
+        android:visibility="invisible"
+        android:onClick="sinAuto"
+        android:text="Ya no tengo mi auto"
+        android:textSize="17sp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/btn6"
+        android:theme="@style/textStylePrimary"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="OnClick" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

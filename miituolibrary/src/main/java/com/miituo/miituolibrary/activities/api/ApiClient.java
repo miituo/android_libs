@@ -281,8 +281,8 @@ public class ApiClient {
             c.setDoOutput(false);
             c.connect();
 //            File f1=new File(context.getExternalFilesDir(null),"poliza.pdf");
-            File f1=new File("/sdcard/Download/",noPoliza+".pdf");
-//            File f1=new File(context.getFilesDir(),"poliza.pdf");
+//            File f1=new File("/sdcard/Download/",noPoliza+".pdf");
+            File f1=new File(context.getFilesDir(),noPoliza+".pdf");
             FileOutputStream f = new FileOutputStream(f1);
             System.out.println("El archivo en: "+f1.getAbsolutePath());
             InputStream in;// = c.getInputStream();
