@@ -18,6 +18,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,14 +33,19 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.miituo.miituolibrary.R;
 import com.miituo.miituolibrary.activities.adapters.PagerAdapter;
 import com.miituo.miituolibrary.activities.api.ApiClient;
 import com.miituo.miituolibrary.activities.data.IinfoClient;
+import com.miituo.miituolibrary.activities.data.InfoClient;
 import com.miituo.miituolibrary.activities.threats.GetPDFSync;
 import com.miituo.miituolibrary.activities.utils.SimpleCallBack;
 
 import java.io.File;
+import java.util.List;
 
 public class DetallesActivity extends AppCompatActivity {
     ViewPager viewPager;
@@ -49,67 +55,70 @@ public class DetallesActivity extends AppCompatActivity {
     public String pathPhotos = new ApiClient(this).pathPhotos;
 
     private static final int PERMISSION_CODE = 1000;
+    private int indexp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalles);
-        SharedPreferences app_preferences= getSharedPreferences("miituo", Context.MODE_PRIVATE);
+        SharedPreferences app_preferences= getSharedPreferences(getString(R.string.shared_name_prefs), Context.MODE_PRIVATE);
         long starttime = app_preferences.getLong("time",0);
 
-//
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbartaby);
-//        toolbar.setTitle("General");
-//        toolbar.setTitleTextColor(Color.BLACK);
-//        setSupportActionBar(toolbar);
-//        //get back arrow
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        indexp = getIntent().getIntExtra("indexp", -1);
+        if(indexp != -1) {
+            String res = app_preferences.getString("polizas","");
+            Gson parseJson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss").create();
+            List<InfoClient> InfoList = parseJson.fromJson(res, new TypeToken<List<InfoClient>>() {
+            }.getType());
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("").setIcon(R.drawable.docs));
-        //tabLayout.addTab(tabLayout.newTab().setText("").setIcon(R.drawable.historial));
-        tabLayout.addTab(tabLayout.newTab().setText("").setIcon(R.drawable.timer));
-        //tabLayout.addTab(tabLayout.newTab().setText("").setIcon(R.drawable.pago));
-        tabLayout.addTab(tabLayout.newTab().setText("").setIcon(R.drawable.phoneblack));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.setSelectedTabIndicatorColor(Color.rgb(55,55,55));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-                //change icon
-                if(tab.getPosition()==0){
-                    tab.setIcon(R.drawable.docs);
-                }else if(tab.getPosition()==1){
-                    tab.setIcon(R.drawable.timer);
-                }else if(tab.getPosition()==2){
-                    tab.setIcon(R.drawable.phoneblack);
+            Log.e("data", res);
+            IinfoClient.setInfoClientObject(InfoList.get(indexp));
+
+            TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+            tabLayout.addTab(tabLayout.newTab().setText("").setIcon(R.drawable.docs));
+            //tabLayout.addTab(tabLayout.newTab().setText("").setIcon(R.drawable.historial));
+            tabLayout.addTab(tabLayout.newTab().setText("").setIcon(R.drawable.timer));
+            //tabLayout.addTab(tabLayout.newTab().setText("").setIcon(R.drawable.pago));
+            tabLayout.addTab(tabLayout.newTab().setText("").setIcon(R.drawable.phoneblack));
+            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+            tabLayout.setSelectedTabIndicatorColor(Color.rgb(55, 55, 55));
+            tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+                @Override
+                public void onTabSelected(TabLayout.Tab tab) {
+                    viewPager.setCurrentItem(tab.getPosition());
+                    //change icon
+                    if (tab.getPosition() == 0) {
+                        tab.setIcon(R.drawable.docs);
+                    } else if (tab.getPosition() == 1) {
+                        tab.setIcon(R.drawable.timer);
+                    } else if (tab.getPosition() == 2) {
+                        tab.setIcon(R.drawable.phoneblack);
+                    }
                 }
-            }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                //change icon
-                if(tab.getPosition()==0){
-                    tab.setIcon(R.drawable.docs);
-                }else if(tab.getPosition()==1){
-                    tab.setIcon(R.drawable.timer);
-                }else if(tab.getPosition()==2){
-                    tab.setIcon(R.drawable.phoneblack);
+                @Override
+                public void onTabUnselected(TabLayout.Tab tab) {
+                    //change icon
+                    if (tab.getPosition() == 0) {
+                        tab.setIcon(R.drawable.docs);
+                    } else if (tab.getPosition() == 1) {
+                        tab.setIcon(R.drawable.timer);
+                    } else if (tab.getPosition() == 2) {
+                        tab.setIcon(R.drawable.phoneblack);
+                    }
                 }
-            }
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+                @Override
+                public void onTabReselected(TabLayout.Tab tab) {
 
-            }
-        });
-        init();
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(),this,starttime,viewPager);
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+                }
+            });
+            init();
+            viewPager = (ViewPager) findViewById(R.id.pager);
+            adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), this, starttime, viewPager);
+            viewPager.setAdapter(adapter);
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        }
     }
 
     public void init(){

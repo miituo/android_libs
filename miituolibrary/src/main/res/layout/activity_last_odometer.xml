@@ -50,7 +50,8 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextConfirmaOdo"
-            android:inputType="number"
+            android:inputType="phone"
+            android:digits="0123456789"
             app:boxStrokeWidth="1dp"
             android:layout_width="match_parent"
             android:hint="Confirma odómetro"

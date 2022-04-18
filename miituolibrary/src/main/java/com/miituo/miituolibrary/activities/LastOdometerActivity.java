@@ -31,9 +31,13 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.miituo.miituolibrary.R;
 import com.miituo.miituolibrary.activities.api.ApiClient;
 import com.miituo.miituolibrary.activities.data.IinfoClient;
+import com.miituo.miituolibrary.activities.data.InfoClient;
 import com.miituo.miituolibrary.activities.utils.TextWatcherCustom;
 
 import org.json.JSONArray;
@@ -46,6 +50,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class LastOdometerActivity extends AppCompatActivity {
 
@@ -84,7 +89,6 @@ public class LastOdometerActivity extends AppCompatActivity {
         EditText edit = (EditText)findViewById(R.id.editTextConfirmaOdo);
 
         odometroAnterior = getIntent().getStringExtra("valor");
-        tok = IinfoClient.getInfoClientObject().getClient().getToken();
 
         app_preferences = getSharedPreferences(getString(R.string.shared_name_prefs), Context.MODE_PRIVATE);
         tipoodometro = app_preferences.getString("odometro","null");
@@ -108,6 +112,28 @@ public class LastOdometerActivity extends AppCompatActivity {
         vistaodo.setImageBitmap(bmp);
 
         api=new ApiClient(this);
+        try {
+            tok = IinfoClient.getInfoClientObject().getClient().getToken();
+        }catch (Exception e){
+            try {
+                if (!app_preferences.getString("polizas", "null").equals("null")) {
+                    Gson parseJson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss").create();
+                    List<InfoClient> polizas = parseJson.fromJson(app_preferences.getString("polizas", "null"), new TypeToken<List<InfoClient>>() {
+                    }.getType());
+                    if (polizas.size() > 0) {
+                        tok = polizas.get(0).getClient().getToken();
+                    } else {
+                        Toast.makeText(this, "Sin autorización, intente mas tarde.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Tenemos un problema para leer la información. Favor de contactar a miituo para mayor información.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }catch (Exception ee){
+                Toast.makeText(this, "Tenemos un problema para leer la información. Favor de contactar a miituo para mayor información.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
     }
 
     public void validar(View v)

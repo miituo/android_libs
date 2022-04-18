@@ -36,6 +36,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.miituo.miituolibrary.R;
 import com.miituo.miituolibrary.activities.api.ApiClient;
 import com.miituo.miituolibrary.activities.data.IinfoClient;
@@ -88,11 +91,24 @@ public class VehicleOdometer extends AppCompatActivity {
         try {
             tok = IinfoClient.getInfoClientObject().getClient().getToken();
         }catch (Exception e){
-            List<InfoClient> polizas = result;
-            if(polizas.size() > 0) {
-                tok = polizas.get(0).getClient().getToken();
-            }else{
-                Toast.makeText(this, "Sin autorización, intente mas tarde.", Toast.LENGTH_SHORT).show();
+            try {
+                app_preferences = getSharedPreferences(getString(R.string.shared_name_prefs), Context.MODE_PRIVATE);
+                if (!app_preferences.getString("polizas", "null").equals("null")) {
+                    Gson parseJson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'hh:mm:ss").create();
+                    List<InfoClient> polizas = parseJson.fromJson(app_preferences.getString("polizas", "null"), new TypeToken<List<InfoClient>>() {
+                    }.getType());
+                    if (polizas.size() > 0) {
+                        tok = polizas.get(0).getClient().getToken();
+                    } else {
+                        Toast.makeText(this, "Sin autorización, intente mas tarde.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Tenemos un problema para leer la información. Favor de contactar a miituo para mayor información.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }catch (Exception ee){
+                Toast.makeText(this, "Tenemos un problema para leer la información. Favor de contactar a miituo para mayor información.", Toast.LENGTH_SHORT).show();
+                finish();
             }
         }
 

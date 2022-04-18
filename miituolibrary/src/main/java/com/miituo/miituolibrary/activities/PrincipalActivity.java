@@ -54,8 +54,6 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
     private LinearLayout dotsLayout;
     private TextView[] dots;
 
-    //private ListView vList;
-    //private VehicleModelAdapter vadapter;
     private VehicleRecyclerAdapter vadapter;
     private SwipeRefreshLayout swipeContainer;
 
@@ -65,10 +63,9 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
     static AlertDialog alerta;
 
     public Double kms = 0.0;
-    public TextView nombre, resumen, sinPolizas;
+    public TextView sinPolizas;
     ImageView imgSinPolizas;
     private ConstraintLayout skeletonView, constraintDataParent;
-    //private RecyclerViewSkeletonScreen.Builder skeletonLast;
     private Skeleton skeletonLayout;
 
     @Override
@@ -118,7 +115,6 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
 
         result = new ArrayList<>();
         long starttime = app_preferences.getLong("time", 0);
-        //vadapter = new VehicleModelAdapter(getApplicationContext(), result, starttime, PrincipalActivity.this);
         recyclerView = findViewById(R.id.listviewinfoclient);
         vadapter = new VehicleRecyclerAdapter(getApplicationContext(), result, starttime, PrincipalActivity.this);
         recyclerView.setHasFixedSize(true);
@@ -128,17 +124,9 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
         vadapter = new VehicleRecyclerAdapter(getApplicationContext(), result, starttime, PrincipalActivity.this);
         recyclerView.setAdapter(vadapter);
 
-//        runOnUiThread(new Runnable() {
-//            public void run() {
-//                recyclerView.setAdapter(vadapter);
-//                vadapter.notifyDataSetChanged();
-//            }
-//        });
-
         pageSwitcher();
 
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-        // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -198,9 +186,6 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                     List<InfoClient> InfoList = parseJson.fromJson(res, new TypeToken<List<InfoClient>>() {
                     }.getType());
 
-                    //final GlobalActivity globalVariable = (GlobalActivity) getApplicationContext();
-                    //globalVariable.setPolizas(InfoList);
-
                     result = InfoList;
 
                     if (result.size() < 1) {
@@ -237,17 +222,14 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
 
     private void removeInvalidPolicies() {
         for (int i = (result.size() - 1); i >= 0; i--) {
-//            if(!result.get(i).getPolicies().isHasVehiclePictures() &&
-//                    !result.get(i).getPolicies().isHasOdometerPicture() &&
             if (result.get(i).getPolicies().getReportState() == 4) {
-//            if(i>0){
                 result.remove(i);
             }
         }
     }
 
     public void pageSwitcher() {
-        timer = new Timer(); // At this line a new Thread will be created
+        timer = new Timer();
         timer.schedule(new RemindTask(), 9000, 9000);
     }
 
@@ -344,9 +326,6 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
         tv.setText("Aplica un cupón al mes por póliza solo si \n" +
                 "reportaste tu odómetro y pagaste el mes anterior.");
         addBottomDots(0);
-
-        //adapter.updateBanners(kms.intValue(), cupon);
-        //addBottomDots(0);
     }
 
     private void addBottomDots(int currentPage) {
@@ -398,18 +377,12 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
             AlertDialog alerta = builder.create();
             alerta.show();
         } else {
-            //Clic into row to launch activity
             InfoClient item = result.get(value);
-            //static class -- set client in this part
-            //LogHelper.log(this,LogHelper.user_interaction,"PrincipalActivity.insgurancesList","clik en la poliza: "+item.getPolicies().getId(), "","",  "", "");
             IinfoClient.setInfoClientObject(item);
             IinfoClient.getInfoClientObject().getClient().setCelphone(app_preferences.getString("Celphone", "0"));
 
             tok_basic = item.getClient().getToken();
             idpoliza = IinfoClient.getInfoClientObject().getPolicies().getId();
-
-            //firebase to get tokne....temp for now
-            //String token = IinfoClient.getInfoClientObject().getClient().getToken();
 
             //set token...
             //IinfoClient.getInfoClientObject().getClient().setToken(token);
@@ -451,6 +424,7 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                     i = new Intent(PrincipalActivity.this, InfoCancelActivity.class);
                 } else {
                     i = new Intent(PrincipalActivity.this, DetallesActivity.class);
+                    i.putExtra("indexp", value);
                 }
                 startActivity(i);
             }
