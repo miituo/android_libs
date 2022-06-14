@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.miituo.miituolibrary.R;
+import com.miituo.miituolibrary.activities.FacturasActivity;
 import com.miituo.miituolibrary.activities.PDFViewer;
 import com.miituo.miituolibrary.activities.WebActivity;
 import com.miituo.miituolibrary.activities.data.IinfoClient;
@@ -32,7 +33,7 @@ public class TabFragment1 extends Fragment {
     TextView tDriver, tContractor, tAuto, tPlacas, tModelo, tLastReport, lbEdoCta, lbCambioPago;
     TextView lbNameDriver, lbCelDriver, lbNameContractor, lbCelContractor;
     TextView lbAuto2, lbPlacas2, lbModelo2, lbLastReport2;
-    LinearLayout lbLastReport3, btnCambioPago;
+    LinearLayout lbLastReport3, btnCambioPago, btnFacturas;
 
     public static AlertDialog alertaPago;
 
@@ -49,6 +50,7 @@ public class TabFragment1 extends Fragment {
         tLastReport = v.findViewById(R.id.lbLastReport);
         lbEdoCta = v.findViewById(R.id.lbEdoCta);
         lbCambioPago = v.findViewById(R.id.lbCambioPago);
+        btnFacturas = v.findViewById(R.id.btnFacturas);
         lbNameDriver = v.findViewById(R.id.lbNameDriver);
         lbNameContractor = v.findViewById(R.id.lbNameContractor);
         lbCelDriver = v.findViewById(R.id.lbCelDriver);
@@ -66,6 +68,16 @@ public class TabFragment1 extends Fragment {
                 startActivity(new Intent(getActivity(), WebActivity.class).putExtra("isPoliza",false));
             }
         });
+
+        btnFacturas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), FacturasActivity.class)
+                    .putExtra("token",IinfoClient.InfoClientObject.getClient().getToken())
+                    .putExtra("idpolicy",IinfoClient.InfoClientObject.getPolicies().getId()));
+            }
+        });
+
         List<Report> list = IinfoClient.getInfoClientObject().getPolicies().getReports();
 //        if (list != null && list.size() > 1) {
         if (IinfoClient.getInfoClientObject().getPolicies().getMensualidad() > 0) {

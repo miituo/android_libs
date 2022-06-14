@@ -7,245 +7,327 @@ android:layout_width="match_parent"
 android:background="#fff"
 tools:context=".activities.adapters.TabFragment1"
 android:layout_height="match_parent">
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:orientation="vertical"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="5dp"
-                android:paddingStart="20dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:background="@drawable/border_detail"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/lbDriver"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:textColor="@color/colorGray"
-                    android:text="Conductor"/>
-                <TextView
-                    android:id="@+id/lbNameDriver"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:textColor="#000000"/>
-                <TextView
-                    android:id="@+id/lbCelDriver"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:textColor="#000000"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="5dp"
-                android:paddingStart="20dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:background="@drawable/border_detail"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/lbContractor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Contratante"
-                    android:textColor="@color/colorGray"
-                    android:gravity="start"/>
-                <TextView
-                    android:id="@+id/lbNameContractor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#000000"
-                    android:gravity="start"/>
-                <TextView
-                    android:id="@+id/lbCelContractor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#000000"
-                    android:gravity="start"/>
-            </LinearLayout>
-        </LinearLayout>
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:paddingStart="20dp"
-            android:paddingTop="9dp"
-            android:paddingBottom="9dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/border_detail"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/lbAuto"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="start"
-                android:textColor="@color/colorGray"
-                android:text="Tu auto"/>
-            <TextView
-                android:id="@+id/lbAuto2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:textColor="#000000"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="5dp"
-                android:paddingStart="20dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:background="@drawable/border_detail"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/lbPlacas"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:textColor="@color/colorGray"
-                    android:text="Placas"/>
-                <TextView
-                    android:id="@+id/lbPlacas2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:textColor="#000000"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:layout_marginStart="5dp"
-                android:paddingStart="20dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:background="@drawable/border_detail"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/lbModelo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Modelo"
-                    android:textColor="@color/colorGray"
-                    android:gravity="start"/>
-                <TextView
-                    android:id="@+id/lbModelo2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#000000"
-                    android:gravity="start"/>
-            </LinearLayout>
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="9dp"
-            android:paddingBottom="9dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/border_detail">
-            <TextView
-                android:id="@+id/lbLastReport"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:textColor="@color/colorGray"
-                android:text="Último reporte odómetro"/>
-            <TextView
-                android:id="@+id/lbLastReport2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="5dp"
-                android:layout_below="@+id/lbLastReport"
-                android:textColor="#000000"/>
-        </RelativeLayout>
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/btnCambioPago"
-                android:layout_width="0dp"
-                android:layout_height="55dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="5dp"
-                android:paddingStart="15dp"
-                android:gravity="center_vertical"
-                android:background="@drawable/border_detail"
                 android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginEnd="5dp"
-                    app:srcCompat="@drawable/pay"/>
-                <TextView
-                    android:id="@+id/lbCambioPago"
-                    android:layout_width="match_parent"
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textColor="#000000"
-                    android:text="Cambiar método de pago"
-                    android:gravity="start|center_vertical"/>
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_detail"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/lbDriver"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="Conductor"
+                        android:textColor="@color/colorGray" />
+
+                    <TextView
+                        android:id="@+id/lbNameDriver"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:id="@+id/lbCelDriver"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_detail"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/lbContractor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="Contratante"
+                        android:textColor="@color/colorGray" />
+
+                    <TextView
+                        android:id="@+id/lbNameContractor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:id="@+id/lbCelContractor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:textColor="#000000" />
+                </LinearLayout>
             </LinearLayout>
+
             <LinearLayout
-                android:id="@+id/lbLastReport3"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:layout_weight="1"
-                android:layout_marginStart="5dp"
-                android:paddingStart="15dp"
-                android:gravity="center_vertical"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/border_detail"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginEnd="5dp"
-                    app:srcCompat="@drawable/estado"/>
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp">
+
                 <TextView
-                    android:id="@+id/lbEdoCta"
+                    android:id="@+id/lbAuto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="start|center_vertical"
-                    android:text="Estado de cuenta"
-                    android:textColor="#000000"/>
+                    android:gravity="start"
+                    android:text="Tu auto"
+                    android:textColor="@color/colorGray" />
+
+                <TextView
+                    android:id="@+id/lbAuto2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:textColor="#000000" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_detail"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/lbPlacas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="Placas"
+                        android:textColor="@color/colorGray" />
+
+                    <TextView
+                        android:id="@+id/lbPlacas2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_detail"
+                    android:orientation="vertical"
+                    android:paddingStart="20dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/lbModelo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="Modelo"
+                        android:textColor="@color/colorGray" />
+
+                    <TextView
+                        android:id="@+id/lbModelo2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:textColor="#000000" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_detail"
+                android:paddingLeft="20dp"
+                android:paddingTop="9dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="9dp">
+
+                <TextView
+                    android:id="@+id/lbLastReport"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="Último reporte odómetro"
+                    android:textColor="@color/colorGray" />
+
+                <TextView
+                    android:id="@+id/lbLastReport2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lbLastReport"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="5dp"
+                    android:gravity="start"
+                    android:textColor="#000000" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/btnCambioPago"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_detail"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="15dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="5dp"
+                        app:srcCompat="@drawable/pay" />
+
+                    <TextView
+                        android:id="@+id/lbCambioPago"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
+                        android:text="Cambiar método de pago"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lbLastReport3"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_detail"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="15dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="5dp"
+                        app:srcCompat="@drawable/estado" />
+
+                    <TextView
+                        android:id="@+id/lbEdoCta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
+                        android:text="Estado de cuenta"
+                        android:textColor="#000000" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:id="@+id/btnFacturas"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_detail"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="15dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="5dp"
+                        app:srcCompat="@drawable/facturaok" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
+                        android:text="Mis facturas"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lbLastReport353"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/border_detail"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="15dp"
+                    android:visibility="invisible">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="5dp"
+                        app:srcCompat="@drawable/estado" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
+                        android:text="Estado de cuenta"
+                        android:textColor="#000000" />
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
 </RelativeLayout>

@@ -3,12 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="miituolibrary/src/main/res/drawable/arrowback_foreground.xml" value="0.14635416666666667" />
         <entry key="miituolibrary/src/main/res/layout/activity_confirm.xml" value="0.427217741976158" />
+        <entry key="miituolibrary/src/main/res/layout/activity_detalles.xml" value="0.25416666666666665" />
+        <entry key="miituolibrary/src/main/res/layout/activity_facturas.xml" value="1.1084175531975013" />
         <entry key="miituolibrary/src/main/res/layout/activity_last_odometer.xml" value="0.17617753623188406" />
         <entry key="miituolibrary/src/main/res/layout/activity_principal.xml" value="0.375" />
         <entry key="miituolibrary/src/main/res/layout/activity_vehicle_odometer.xml" value="0.1" />
         <entry key="miituolibrary/src/main/res/layout/activity_vehicle_pictures.xml" value="0.25" />
         <entry key="miituolibrary/src/main/res/layout/activity_web.xml" value="0.17617753623188406" />
+        <entry key="miituolibrary/src/main/res/layout/fragment_tab1.xml" value="0.335" />
+        <entry key="miituolibrary/src/main/res/layout/item_factura.xml" value="0.375" />
       </map>
     </option>
   </component>

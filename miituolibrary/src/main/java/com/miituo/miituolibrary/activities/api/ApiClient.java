@@ -221,55 +221,6 @@ public class ApiClient {
             }
         }
     }
-    //Enviamos odometro por pirmera vez-----------------------------------------------------------------
-    public String postDatos(String Url,String body) throws IOException
-    {
-        InputStream in=null;
-        String jsonstring="";
-        try {
-            URL url = new URL(UrlApi+Url);
-            HttpURLConnection urlConnection=(HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(10000);
-            urlConnection.setConnectTimeout(10000);
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setUseCaches(false);
-            urlConnection.setDoOutput(true);
-            urlConnection.setRequestProperty("Authorization",miituoKey);
-            urlConnection.setRequestProperty("Content-Type", "application/json");
-            urlConnection.setRequestProperty("Accept","application/json");
-            urlConnection.connect();
-
-            OutputStreamWriter writter=new OutputStreamWriter(urlConnection.getOutputStream());
-            writter.write(body);
-            writter.flush();
-            writter.close();
-            int statusCode = urlConnection.getResponseCode();
-            if (statusCode != 200) {
-                //Log.d(TAG, "The response is: " + statusCode);
-                in=urlConnection.getErrorStream();
-                jsonstring=getStringFromInputStream(in);
-                try {
-                    JSONObject error = new JSONObject(jsonstring);
-                    throw new IOException(error.getString(("Message")));
-                }
-                catch (JSONException ex)
-                {
-                    throw new IOException("Error al Convertir Respuesta de Error");
-                }
-            }
-            else {
-                in = urlConnection.getInputStream();
-                jsonstring=getStringFromInputStream(in);
-            }
-        }
-        finally {
-            if(in!=null)
-            {
-                in.close();
-            }
-        }
-        return  jsonstring;
-    }
 
     public String getPDF(Context context,String url,String noPoliza){
         String res=null;
@@ -1324,7 +1275,7 @@ public class ApiClient {
     }
 
     //Metodo para recuperar datos del cliente----------------------------------------------------------------
-    public String getToken(String Url)
+    public String getFacturas(String Url, String tok)
     {
         final String TAG = "JsonParser.java";
         List<InfoClient> InfoList=null;
@@ -1333,27 +1284,28 @@ public class ApiClient {
             //LogHelper.log(this.c,//LogHelper.request,Url, "getToken inicio", "","",  "", "");
             URL url = new URL(UrlApi+Url);
             HttpURLConnection urlConnection=(HttpURLConnection) url.openConnection();
-            //urlConnection.setReadTimeout(10000);
-            //urlConnection.setConnectTimeout(15000);
+            urlConnection.setReadTimeout(10000);
+            urlConnection.setConnectTimeout(15000);
             urlConnection.setRequestMethod("GET");
             urlConnection.setDoInput(true);
+
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestProperty("Accept","application/json");
+            urlConnection.setRequestProperty("Authorization",tok);
+
             urlConnection.connect();
             int statusCode = urlConnection.getResponseCode();
             if (statusCode != 200) {
                 String jsonstring="";
-                //Log.d(TAG, "The response is: " + statusCode);
                 in=urlConnection.getErrorStream();
                 jsonstring=getStringFromInputStream(in);
                 try {
-                    //LogHelper.log(this.c,//LogHelper.request,Url, "getToken error", "",jsonstring, "", "");
                     JSONObject error = new JSONObject(jsonstring);
                     return "error@"+error.getString(("Message"));
-                    //throw new IOException(error.getString(("Message")));
                 }
                 catch (JSONException ex)
                 {
                     return "error@Error al Convertir Respuesta de Error";
-                    //throw new IOException("Error al Convertir Respuesta de Error");
                 }
             }
             else
@@ -1363,29 +1315,71 @@ public class ApiClient {
             String jsonstring="";
             try {
                 jsonstring=getStringFromInputStream(in);
-                Log.e("TOKEN",jsonstring);
-                //LogHelper.log(this.c,//LogHelper.request,Url, "getToken OK", "", jsonstring, "", "");
+                Log.e("data facturas",jsonstring);
                 return jsonstring;
             } catch (Exception e) {
-                //LogHelper.log(this.c,//LogHelper.request,Url, "getToken error", "", jsonstring, "", //LogHelper.getException(e));
                 e.printStackTrace();
                 return "error@"+e.getMessage();
             }finally {
                 in.close();
             }
-
-            //InputStream in=new BufferedInputStream(urlConnection.getInputStream());
         }catch (Exception e) {
-            //LogHelper.log(this.c,//LogHelper.request,Url, "getToken error", "", "", "", //LogHelper.getException(e));
             e.printStackTrace();
             return "error@"+e.getMessage();
         }
-        /*finally {
+    }
+
+//Enviamos factura por pirmera vez-----------------------------------------------------------------
+    public String postFactura(String Url,String token) throws IOException
+    {
+        InputStream in=null;
+        String jsonstring="";
+        try {
+            URL url = new URL(UrlApi+Url);
+            HttpURLConnection urlConnection=(HttpURLConnection) url.openConnection();
+            urlConnection.setReadTimeout(10000);
+            urlConnection.setConnectTimeout(10000);
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setUseCaches(false);
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestProperty("Authorization",token);
+            urlConnection.connect();
+
+            int statusCode = urlConnection.getResponseCode();
+            if (statusCode != 200) {
+
+                in=urlConnection.getErrorStream();
+                jsonstring=getStringFromInputStream(in);
+                try {
+                    JSONObject error = new JSONObject(jsonstring);
+                    return "error@"+error.getString(("Message"));
+                }
+                catch (JSONException ex)
+                {
+                    return "error@Error al Convertir Respuesta de Error";
+                }
+            }
+            else {
+                in = urlConnection.getInputStream();
+
+                try {
+                    jsonstring=getStringFromInputStream(in);
+                    Log.e("data facturas sent",jsonstring);
+                    return jsonstring;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "error@"+e.getMessage();
+                }finally {
+                    in.close();
+                }
+            }
+        }
+        finally {
             if(in!=null)
             {
                 in.close();
             }
-        }*/
+        }
     }
 
     public List<FotosFaltantesModel> getFotosFaltantes(String Url, int idpoliza, String tok_basic) {

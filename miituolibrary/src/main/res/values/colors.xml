@@ -15,6 +15,8 @@
     <color name="gris_miituo">#2f3033</color>
     <color name="beige_miituo">#d7d2cb</color>
     <color name="colorDarkGray">#898989</color>
+    <color name="gris_light_miituo">#f8f8f8</color>
+    <color name="white">#ffffff</color>
 
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>
