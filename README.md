@@ -36,11 +36,11 @@ android {
         ...
         
 dependencies {
-implementation 'com.github.miituo:android_libs:0.4.0'
+implementation 'com.github.miituo:android_libs:0.5.0'
 ...
 ```
 ## IMPORTANTE:
-La versión 0.4.0 corre apartir del target 30 de android, para versiones anteriores, seguir usando la version 0.3.91
+La versión 0.5.0 corre apartir del target 30 de android, para versiones anteriores, seguir usando la version 0.3.91
 
 ## Uso:
 
