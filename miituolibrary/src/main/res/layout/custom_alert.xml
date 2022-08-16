@@ -245,7 +245,53 @@
 
         <!--separadpr-->
 
-        <!--Cobros adicionales-->
+        <!--Condonados y Vacaciones-->
+        <LinearLayout
+            android:id="@+id/cntVacacionesCondonados"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/lbVacacionesCondonados"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="25dp"
+                android:theme="@style/textStylePrimary"
+                android:text="Tope (km)"
+                android:textColor="#2f3030"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/lbVacaciones2Condonados"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="end"
+                    android:theme="@style/textStylePrimary"
+                    android:text="1000"
+                    android:textColor="#2f3030"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/textView6s6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="10dp"
+                    android:theme="@style/textStylePrimary"
+                    android:text="*"
+                    android:textSize="15sp"
+                    android:textColor="@color/azul_miituo"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
 
         <!--Tarifa por km-->
         <LinearLayout

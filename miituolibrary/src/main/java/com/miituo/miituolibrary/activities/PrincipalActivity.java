@@ -347,7 +347,7 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
     }
 
     public void launchAlert(String res){
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(PrincipalActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(PrincipalActivity.this);
         builder.setTitle("Atención");
         builder.setMessage(res);
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -356,8 +356,10 @@ public class PrincipalActivity extends AppCompatActivity implements CallBack {
                 PrincipalActivity.this.finish();
             }
         });
-        android.app.AlertDialog alerta = builder.create();
-        alerta.show();
+        AlertDialog alerta = builder.create();
+        if(!isFinishing()) {
+            alerta.show();
+        }
     }
 
     @Override

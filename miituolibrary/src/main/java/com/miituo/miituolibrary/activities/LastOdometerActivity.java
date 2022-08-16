@@ -694,6 +694,7 @@ public class LastOdometerActivity extends AppCompatActivity {
                 t47 = dialog.findViewById(R.id.lbReferidos);
                 TextView lbReferidos2 = (TextView)dialog.findViewById(R.id.lbReferidos2);
                 TextView lbVacaciones=(TextView)dialog.findViewById(R.id.lbVacacionesHelp);
+                TextView lbVacaciones2Condonados=(TextView)dialog.findViewById(R.id.lbVacaciones2Condonados);
                 lbVacaciones.setText("Este mes recorriste más de 1000 km,\npero no te preocupes solo te cobraremos 1000 km");
                 TextView lbTerminos = (TextView)dialog.findViewById(R.id.textoTerminos);
                 lbTerminos.setOnClickListener(new View.OnClickListener() {
@@ -719,14 +720,17 @@ public class LastOdometerActivity extends AppCompatActivity {
                     if(acobrar<=0){
                         diferencia="0";
                     }
-                    //                            else if((cupones.length()>0) && (acobrar>Integer.parseInt(parametro_tope_kms))){
-                    //                                acobrar=Integer.parseInt(parametro_tope_kms);
-                    //                                diferencia=""+acobrar;
-                    //                                lbVacaciones.setVisibility(View.VISIBLE);
-                    //                                LinearLayout ll2=(LinearLayout)dialog.findViewById(R.id.cntVacaciones);
-                    //                                ll2.setVisibility(View.VISIBLE);
-                    //                                lbVacaciones2.setText(diferencia);
-                    //                            }
+                    if(cupones.length()>0){
+                        for (int i=0;i<cupones.length();i++) {
+                            JSONObject o = cupones.getJSONObject(i);
+                            if(o.getInt("Type")==3){
+                                // tope vacaciones
+                                LinearLayout llvc = dialog.findViewById(R.id.cntVacacionesCondonados);
+                                llvc.setVisibility(View.VISIBLE);
+                                lbVacaciones2Condonados.setText(parametro_tope_kms);
+                            }
+                        }
+                    }
                 }
                 else if(cupones.length()>0){
                     for (int i=0;i<cupones.length();i++) {
