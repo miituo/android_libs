@@ -846,7 +846,7 @@ public class LastOdometerActivity extends AppCompatActivity {
                 //Tarifas-------------------------------------------------------------------
                 double s1 = Double.parseDouble(feepormktarifa);
                 TextView tarifa = (TextView)dialog.findViewById(R.id.textView21);
-                DecimalFormat formattertarifa = new DecimalFormat("$ 0.0000");
+                DecimalFormat formattertarifa = new DecimalFormat("$ 0.00");
                 tarifa.setText(formattertarifa.format(s1));
 
                 //str = fee.toString().replaceAll("[^\\d]", "");
