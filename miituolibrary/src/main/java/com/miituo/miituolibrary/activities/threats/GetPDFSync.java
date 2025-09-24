@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 
+import com.miituo.miituolibrary.activities.DetallesActivity;
 import com.miituo.miituolibrary.activities.api.ApiClient;
 import com.miituo.miituolibrary.activities.data.IinfoClient;
 import com.miituo.miituolibrary.activities.utils.SimpleCallBack;
@@ -46,6 +47,7 @@ public class GetPDFSync extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... voids) {
         ApiClient ac=new ApiClient(c);
         if(isPoliza) {
+            DetallesActivity.pdfUrl = "https://api.miituo.com/api/Policy/getReport/" + id;
             resp = ac.getPDF(c,"Policy/getReport/"+ id, noPoliza);
         }else{
             resp = ac.getPDF(c, "Policy/getStatement/"+id, noPoliza+"_"+ IinfoClient.getInfoClientObject().getPolicies().getMensualidad());
