@@ -1,99 +1,58 @@
 package com.miituo.miituolibrary.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
-
-import com.github.barteksc.pdfviewer.PDFView;
-import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
-import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import com.miituo.miituolibrary.R;
-import com.shockwave.pdfium.PdfDocument;
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
 
-import java.util.List;
+public class PDFViewer extends AppCompatActivity {
 
-public class PDFViewer extends AppCompatActivity implements OnPageChangeListener, OnLoadCompleteListener {
-    PDFView pdfView;
-    Integer pageNumber = 0;
-    String pdfFileName;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_share, menu);
-        return true;
-    }
+    private WebView webView;
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-        }
-        else if (item.getItemId() == R.id.menu_share) {
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-            Uri screenshotUri = Uri.parse(DetallesActivity.pdf.getAbsolutePath());
-            sharingIntent.setType("*/*");
-            sharingIntent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-            startActivity(Intent.createChooser(sharingIntent, "Share image using"));
-        }
-        return false;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_p_d_f_viewer);
 
-        boolean isPoliza = getIntent().getBooleanExtra("isPoliza",true);
+        webView = findViewById(R.id.pdfWebView);
+        setupWebView();
 
-        pdfView= (PDFView)findViewById(R.id.pdfView);
-        displayPDF();
+        loadPdf(DetallesActivity.pdf);
     }
 
-    private void displayPDF() {
-        try {
-            pdfView.fromFile(DetallesActivity.pdf)
-                    .defaultPage(pageNumber)
-                    .enableSwipe(true)
+    private void setupWebView() {
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setDisplayZoomControls(false);
 
-                    .swipeHorizontal(false)
-                    .onPageChange(this)
-                    .enableAnnotationRendering(true)
-                    .onLoad(this)
-                    .scrollHandle(new DefaultScrollHandle(this))
-                    .load();
-        }catch (Exception e){
-            e.printStackTrace();
-            Toast.makeText(this, "Tuvimos un problema para visualizar el documemto. Intente más tarde.", Toast.LENGTH_LONG).show();
+        webView.setWebViewClient(new WebViewClient());
+        webView.setWebChromeClient(new WebChromeClient());
+    }
+
+    private void loadPdf(File file) {
+        if (file == null || !file.exists()) {
+            throw new IllegalArgumentException("File is null or does not exist");
         }
-    }
 
+        try {
+            // Encode the file path for compatibility
+            String filePath = URLEncoder.encode(file.getAbsolutePath(), "UTF-8").replace("+", "%20");
 
-    @Override    public void onPageChanged(int page, int pageCount) {
-        pageNumber = page;
-        setTitle(String.format("%s %s / %s", pdfFileName, page + 1, pageCount));
-    }
-
-
-    @Override    public void loadComplete(int nbPages) {
-        PdfDocument.Meta meta = pdfView.getDocumentMeta();
-        printBookmarksTree(pdfView.getTableOfContents(), "-");
-    }
-
-    public void printBookmarksTree(List<PdfDocument.Bookmark> tree, String sep) {
-        for (PdfDocument.Bookmark b : tree) {
-
-            if (b.hasChildren()) {
-                printBookmarksTree(b.getChildren(), sep + "-");
-            }
+            // Load the PDF using Google Drive Viewer
+            String url = "https://drive.google.com/viewerng/viewer?embedded=true&url=" + DetallesActivity.pdfUrl;
+            webView.loadUrl(url);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

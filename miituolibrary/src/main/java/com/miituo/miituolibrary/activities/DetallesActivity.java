@@ -53,6 +53,7 @@ public class DetallesActivity extends AppCompatActivity {
     public static File pdf;
     public static AlertDialog alertaPago;
     public String pathPhotos = new ApiClient(this).pathPhotos;
+    public static String pdfUrl = "";
 
     private static final int PERMISSION_CODE = 1000;
     private int indexp;

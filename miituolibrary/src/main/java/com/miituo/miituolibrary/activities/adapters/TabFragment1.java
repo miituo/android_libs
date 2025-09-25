@@ -2,7 +2,6 @@ package com.miituo.miituolibrary.activities.adapters;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
