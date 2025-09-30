@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        // targetSdkVersion es opcional en libs
         consumerProguardFiles "consumer-rules.pro"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -20,31 +20,31 @@ android {
         }
     }
 
-    // AGP 7/8: aquí SOLO se expone el/los componentes
+    // Exponer el variant que queremos publicar (AGP 7/8)
     publishing {
-        // publica el componente 'release' para maven-publish
         singleVariant("release") {
             withSourcesJar()
-            // withJavadocJar()  // si tienes javadoc
+            // withJavadocJar() // si generas javadoc
         }
     }
 
-    // (opcional pero recomendado si tienes Java)
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
-// AGP crea components.release después de evaluar el proyecto
+// PUBLICACIÓN MAVEN (fuera de android {})
+// Importante: referenciar el componente dentro de afterEvaluate
 afterEvaluate {
     publishing {
         publications {
             create("release", MavenPublication) {
-                from components.release
-                groupId = "com.github.miituo"     // grupo JitPack
-                artifactId = "android_libs"       // nombre fijo del artefacto
-                // la versión la define JitPack según el tag
+                // ahora sí existe components["release"]
+                from(components["release"])
+                groupId = "com.github.miituo"   // grupo para JitPack
+                artifactId = "android_libs"     // nombre del artefacto
+                // la versión la pone JitPack según el tag
             }
         }
     }
@@ -52,11 +52,14 @@ afterEvaluate {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.24"))
+
     implementation 'com.github.bumptech.glide:glide:5.0.5'
     implementation 'com.github.bumptech.glide:okhttp3-integration:5.0.5'
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.24"))
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.google.code.gson:gson:2.13.2'
     implementation 'com.google.android.material:material:1.13.0'
