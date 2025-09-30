@@ -2,6 +2,10 @@ package com.miituo.miituolibrary.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.github.barteksc.pdfviewer.PDFView;
@@ -50,7 +55,16 @@ public class PDFViewer extends AppCompatActivity implements OnPageChangeListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_p_d_f_viewer);
+
+        final View root = findViewById(android.R.id.content); // <-- content view
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return insets;
+        });
+
 
         boolean isPoliza = getIntent().getBooleanExtra("isPoliza",true);
 

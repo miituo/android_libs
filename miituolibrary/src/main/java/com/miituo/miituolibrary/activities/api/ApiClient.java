@@ -51,14 +51,14 @@ public class ApiClient {
     public ApiClient(Context c){
         this.c=c;
         if(ambiente==0){
-            UrlApi="https://apidev2019.miituo.com/api/"; //desarrollo
-            UrlCotiza= "https://websitedev2019.miituo.com/Cotizar";
+            UrlApi="https://apidev.miituo.com/api/"; //desarrollo
+            UrlCotiza= "https://websitedev.miituo.com/Cotizar";
             miituoKey="Basic yTZ/1bWv6Mpi85ZDkwK4AvJVZH2zA6hcdk0BecEoP4upNOLi2hLM4fzzcPmmSe8UUI5EcJoT4dySqIStZaqvCnlo4dLCASmhjZInXhRlcdc=";
             pathPhotos = "https://filesdev.miituo.com/";
         }
         if(ambiente==1){
-            UrlApi="https://apiqas2019.miituo.com/api/";
-            UrlCotiza = "https://websiteqas2019.miituo.com/Cotizar";//control de calidad
+            UrlApi="https://apiqas.miituo.com/api/";
+            UrlCotiza = "https://websiteqas.miituo.com/Cotizar";//control de calidad
             miituoKey="Basic yTZ/1bWv6Mpi85ZDkwK4AvJVZH2zA6hcdk0BecEoP4upNOLi2hLM4fzzcPmmSe8UUI5EcJoT4dySqIStZaqvCnlo4dLCASmhjZInXhRlcdc=";
             pathPhotos = "https://filesqa.miituo.com/";
         }
